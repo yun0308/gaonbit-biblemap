@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>가온빛교회 성경 읽기·필사 지도</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F5F0;
+  --paper-2:#FFFFFF;
+  --ink:#1B2430;
+  --ink-soft:#5C6675;
+  --line:#E2DED4;
+
+  --read:#C8981F;        /* 읽기완료 — 금빛 */
+  --read-bg:#FBF0D4;
+  --write:#3A5DA8;       /* 필사완료 — 잉크빛 */
+  --write-bg:#E3EAF8;
+  --both:#1A6B54;        /* 둘다완료 — 짙은 초록 */
+  --both-bg:#D9EDE5;
+
+  --r:10px;
+  --shadow:0 1px 2px rgba(27,36,48,.06), 0 4px 16px rgba(27,36,48,.05);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.55;
+  font-size:16px;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button,input{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+:focus-visible{outline:2.5px solid var(--write);outline-offset:2px}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+/* ===== 로그인 ===== */
+#login{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:32px 16px 48px}
+.login-card{max-width:420px;width:100%;margin:0 auto}
+
+.brand{text-align:center;margin-bottom:36px}
+.brand-mark{
+  width:64px;height:64px;margin:0 auto 18px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:3px;
+}
+.brand-mark i{background:var(--line);border-radius:2px;display:block}
+.brand-mark i:nth-child(1),.brand-mark i:nth-child(2),
+.brand-mark i:nth-child(4){background:var(--read)}
+.brand-mark i:nth-child(5){background:var(--both)}
+.brand-mark i:nth-child(3){background:var(--write)}
+
+.brand h1{
+  font-family:'Gowun Batang',serif;
+  font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.35;
+}
+.brand p{margin-top:8px;color:var(--ink-soft);font-size:14px}
+
+.field{margin-bottom:20px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+.field .opt{font-weight:400;color:var(--ink-soft);font-size:13px;margin-left:5px}
+.field input{
+  width:100%;padding:14px 15px;
+  border:1.5px solid var(--line);border-radius:var(--r);
+  background:var(--paper-2);
+  transition:border-color .15s;
+}
+.field input:focus{border-color:var(--write);outline:none}
+.field input.err{border-color:#C0392B;background:#FDF2F0}
+.hint{font-size:13px;color:var(--ink-soft);margin-top:7px}
+.hint.err{color:#C0392B;font-weight:500}
+
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{
+  padding:14px 10px;border:1.5px solid var(--line);border-radius:var(--r);
+  background:var(--paper-2);font-weight:500;transition:all .15s;
+}
+.seg button[aria-pressed="true"]{
+  border-color:var(--ink);background:var(--ink);color:var(--paper);font-weight:600;
+}
+
+.btn-primary{
+  width:100%;padding:16px;margin-top:8px;
+  background:var(--ink);color:var(--paper);
+  border-radius:var(--r);font-size:17px;font-weight:600;letter-spacing:-.01em;
+  transition:opacity .15s;
+}
+.btn-primary:active{opacity:.85}
+
+.guest-note{
+  margin-top:18px;padding:13px 15px;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:var(--r);
+  font-size:13px;color:var(--ink-soft);line-height:1.6;
+}
+
+/* ===== 지도 헤더 ===== */
+#map{display:none}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(247,245,240,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{
+  max-width:760px;margin:0 auto;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
+}
+.who{flex:1;min-width:0}
+.who strong{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.who span{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:1px}
+.topbar button{
+  padding:8px 13px;border:1.5px solid var(--line);border-radius:8px;
+  background:var(--paper-2);font-size:13.5px;font-weight:500;white-space:nowrap;
+}
+
+.banner{
+  background:var(--read-bg);border-bottom:1px solid #E8D9A8;
+  padding:10px 16px;font-size:13.5px;text-align:center;color:#7A5D10;
+}
+
+/* ===== 통계 ===== */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0 14px}
+.stat{
+  background:var(--paper-2);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px 12px;box-shadow:var(--shadow);
+}
+.stat .k{font-size:12px;color:var(--ink-soft);font-weight:500}
+.stat .v{font-family:'Gowun Batang',serif;font-size:27px;font-weight:700;line-height:1.15;margin-top:5px}
+.stat .v small{font-size:14px;font-weight:400;margin-left:1px}
+.stat .sub{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+.stat.r .v{color:var(--read)} .stat.w .v{color:var(--write)}
+
+.legend{
+  display:flex;flex-wrap:wrap;gap:14px;
+  padding:12px 14px;margin-bottom:22px;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:var(--r);
+  font-size:13px;
+}
+.legend i{
+  width:15px;height:15px;border-radius:4px;display:inline-block;
+  vertical-align:-3px;margin-right:6px;border:1px solid rgba(0,0,0,.08);
+}
+.legend i.lg-dot{position:relative;border-color:var(--line)}
+.legend i.lg-dot::after{
+  content:"";position:absolute;top:2px;right:2px;
+  width:4px;height:4px;border-radius:50%;background:var(--ink-soft);
+}
+
+/* ===== 권 카드 ===== */
+.book{
+  background:var(--paper-2);border:1px solid var(--line);border-radius:14px;
+  margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);
+}
+.book-head{display:flex;align-items:center;gap:12px;padding:15px 16px 13px}
+.book-title{flex:1;min-width:0}
+.book-title h3{font-family:'Gowun Batang',serif;font-size:19px;font-weight:700;letter-spacing:-.01em}
+.book-title .meta{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+.book-title .meta b{font-weight:600;color:var(--ink)}
+
+.bulk{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;
+  font-size:13px;font-weight:500;white-space:nowrap;background:var(--paper);
+}
+.bulk .box{
+  width:17px;height:17px;border:1.8px solid var(--ink-soft);border-radius:4px;
+  display:grid;place-items:center;flex:none;
+}
+.bulk[aria-pressed="true"] .box{background:var(--ink);border-color:var(--ink)}
+.bulk[aria-pressed="true"] .box::after{
+  content:"";width:9px;height:5px;margin-top:-2px;
+  border-left:2px solid var(--paper);border-bottom:2px solid var(--paper);
+  transform:rotate(-45deg);
+}
+
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));
+  gap:6px;padding:0 16px 16px;
+}
+.ch{
+  position:relative;aspect-ratio:1;min-height:42px;
+  border:1.5px solid var(--line);border-radius:8px;
+  background:var(--paper);
+  font-size:13.5px;font-weight:600;color:var(--ink-soft);
+  display:grid;place-items:center;
+  transition:transform .1s, background .15s, border-color .15s;
+}
+.ch:active{transform:scale(.92)}
+.ch[data-s="read"]{background:var(--read-bg);border-color:var(--read);color:#8A6A10}
+.ch[data-s="write"]{background:var(--write-bg);border-color:var(--write);color:#2A4680}
+.ch[data-s="both"]{background:var(--both-bg);border-color:var(--both);color:#0F4C3B}
+.ch.has-sermon::after{
+  content:"";position:absolute;top:4px;right:4px;
+  width:5px;height:5px;border-radius:50%;background:var(--ink-soft);
+}
+.ch[data-s]:not([data-s=""]).has-sermon::after{background:currentColor}
+
+.sermons{border-top:1px solid var(--line);background:#FCFBF8}
+.sermons-h{
+  padding:11px 16px 7px;font-size:12px;font-weight:600;
+  color:var(--ink-soft);letter-spacing:.02em;
+}
+.sermon{
+  display:flex;align-items:center;gap:11px;
+  padding:11px 16px;border-top:1px solid #EFEBE2;
+  text-decoration:none;color:inherit;
+}
+.sermon:active{background:#F5F2EA}
+.badge{
+  flex:none;min-width:44px;padding:4px 7px;
+  background:var(--ink);color:var(--paper);
+  border-radius:6px;font-size:11.5px;font-weight:600;text-align:center;
+}
+.sermon-t{flex:1;min-width:0;font-size:14px;line-height:1.4}
+.sermon-p{flex:none;font-size:12px;color:var(--ink-soft);text-align:right}
+
+/* ===== 하단 ===== */
+.foot{padding:26px 0 40px;text-align:center}
+.btn-reset{
+  padding:11px 20px;border:1.5px solid var(--line);border-radius:9px;
+  background:var(--paper-2);font-size:14px;color:var(--ink-soft);
+}
+.foot p{margin-top:14px;font-size:12px;color:var(--ink-soft)}
+
+/* ===== 토스트 ===== */
+#toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,90px);
+  background:var(--ink);color:var(--paper);
+  padding:12px 20px;border-radius:22px;font-size:14px;font-weight:500;
+  z-index:100;transition:transform .28s cubic-bezier(.2,.9,.3,1.2);
+  max-width:calc(100% - 32px);text-align:center;
+  box-shadow:0 6px 24px rgba(27,36,48,.25);
+}
+#toast.on{transform:translate(-50%,0)}
+
+@media (min-width:600px){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:7px}
+  .brand h1{font-size:29px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== 로그인 ========== -->
+<section id="login">
+  <div class="login-card">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <h1>성경 읽기·필사 지도</h1>
+      <p>가온빛교회 리딩지저스</p>
+    </div>
+
+    <div class="field">
+      <label for="f-name">이름 <span class="opt">비워두면 둘러보기로 시작합니다</span></label>
+      <input id="f-name" type="text" autocomplete="name" placeholder="이름을 입력하세요">
+    </div>
+
+    <div class="field">
+      <label for="f-birth">생년월일 <span class="opt">이름을 적었다면 필수</span></label>
+      <input id="f-birth" type="tel" inputmode="numeric" maxlength="8" autocomplete="bday"
+             placeholder="19900101">
+      <p class="hint" id="birth-hint">숫자 8자리로 적어주세요. 같은 이름을 구분하는 데 씁니다.</p>
+    </div>
+
+    <div class="field">
+      <label>먼저 기록할 활동</label>
+      <div class="seg" id="seg-mode">
+        <button type="button" data-v="read" aria-pressed="true">읽기</button>
+        <button type="button" data-v="write" aria-pressed="false">필사</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>성경</label>
+      <div class="seg" id="seg-test">
+        <button type="button" data-v="NT" aria-pressed="true">신약</button>
+        <button type="button" data-v="OT" aria-pressed="false">구약</button>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-start">시작</button>
+
+    <p class="guest-note">
+      이름 없이 시작하면 지도를 둘러볼 수 있지만, 표시한 진도는 저장되지 않습니다.
+    </p>
+  </div>
+</section>
+
+<!-- ========== 지도 ========== -->
+<section id="map">
+  <div class="topbar">
+    <div class="topbar-in">
+      <div class="who">
+        <strong id="who-name">—</strong>
+        <span id="who-meta">—</span>
+      </div>
+      <button id="btn-logout">다른 계정</button>
+    </div>
+  </div>
+
+  <div class="banner" id="guest-banner" style="display:none">
+    둘러보기 중입니다. 표시한 진도는 저장되지 않습니다.
+  </div>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat r">
+        <div class="k">읽기</div>
+        <div class="v" id="s-read">0<small>%</small></div>
+        <div class="sub" id="s-read-n">0장</div>
+      </div>
+      <div class="stat w">
+        <div class="k">필사</div>
+        <div class="v" id="s-write">0<small>%</small></div>
+        <div class="sub" id="s-write-n">0장</div>
+      </div>
+      <div class="stat">
+        <div class="k">연결된 설교</div>
+        <div class="v" id="s-sermon">0</div>
+        <div class="sub">편</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><i style="background:var(--read-bg);border-color:var(--read)"></i>읽기완료</span>
+      <span><i style="background:var(--write-bg);border-color:var(--write)"></i>필사완료</span>
+      <span><i style="background:var(--both-bg);border-color:var(--both)"></i>둘다완료</span>
+      <span><i class="lg-dot" style="background:var(--paper)"></i>설교 있는 장</span>
+    </div>
+
+    <div id="books"></div>
+
+    <div class="foot">
+      <button class="btn-reset" id="btn-reset">진도 초기화</button>
+      <p id="sync-note">기기가 달라도 이름과 생년월일이 같으면 이어서 기록됩니다.</p>
+    </div>
+  </div>
+</section>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   설정
+   ============================================================ */
+const CONFIG = {
+  // Apps Script 웹앱 URL을 배포한 뒤 여기에 붙여넣으세요.
+  // 비워두면 이 브라우저에만 저장하는 '로컬 모드'로 동작합니다.
+  API_URL: '',
+
+  // 설교 데이터 파일 경로 (같은 폴더에 sermons.json 을 두세요)
+  SERMONS_URL: './sermons.json'
+};
+
+/* ============================================================
+   성경 메타데이터 (개역개정 · 구약 39권 929장 / 신약 27권 260장)
+   ============================================================ */
+const BOOKS = {
+OT:[["gen","창세기",50],["exo","출애굽기",40],["lev","레위기",27],["num","민수기",36],
+["deu","신명기",34],["jos","여호수아",24],["jdg","사사기",21],["rut","룻기",4],
+["1sa","사무엘상",31],["2sa","사무엘하",24],["1ki","열왕기상",22],["2ki","열왕기하",25],
+["1ch","역대상",29],["2ch","역대하",36],["ezr","에스라",10],["neh","느헤미야",13],
+["est","에스더",10],["job","욥기",42],["psa","시편",150],["pro","잠언",31],
+["ecc","전도서",12],["sng","아가",8],["isa","이사야",66],["jer","예레미야",52],
+["lam","예레미야애가",5],["ezk","에스겔",48],["dan","다니엘",12],["hos","호세아",14],
+["jol","요엘",3],["amo","아모스",9],["oba","오바댜",1],["jon","요나",4],
+["mic","미가",7],["nam","나훔",3],["hab","하박국",3],["zep","스바냐",3],
+["hag","학개",2],["zec","스가랴",14],["mal","말라기",4]],
+NT:[["mat","마태복음",28],["mrk","마가복음",16],["luk","누가복음",24],["jhn","요한복음",21],
+["act","사도행전",28],["rom","로마서",16],["1co","고린도전서",16],["2co","고린도후서",13],
+["gal","갈라디아서",6],["eph","에베소서",6],["php","빌립보서",4],["col","골로새서",4],
+["1th","데살로니가전서",5],["2th","데살로니가후서",3],["1ti","디모데전서",6],["2ti","디모데후서",4],
+["tit","디도서",3],["phm","빌레몬서",1],["heb","히브리서",13],["jas","야고보서",5],
+["1pe","베드로전서",5],["2pe","베드로후서",3],["1jn","요한1서",5],["2jn","요한2서",1],
+["3jn","요한3서",1],["jud","유다서",1],["rev","요한계시록",22]]
+};
+const TOTAL = { OT:929, NT:260 };
+
+/* ============================================================
+   상태
+   ============================================================ */
+let S = {
+  name:'', birth:'', mode:'read', testament:'NT',
+  guest:false,
+  progress:{},          // { book_id: { chapter: {read,write} } }
+  sermons:{ OT:{}, NT:{} },
+  pending:{},           // 저장 대기 중인 변경분
+  timer:null
+};
+
+const $ = s => document.querySelector(s);
+const LS_KEY = 'gaonbit_bible_login';
+
+/* ============================================================
+   화면 전환
+   ============================================================ */
+function showLogin(){
+  $('#login').style.display='flex';
+  $('#map').style.display='none';
+  window.scrollTo(0,0);
+}
+function showMap(){
+  $('#login').style.display='none';
+  $('#map').style.display='block';
+  window.scrollTo(0,0);
+}
+
+/* ============================================================
+   로그인 화면
+   ============================================================ */
+function initSeg(id, onPick){
+  $(id).addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    [...$(id).children].forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+    onPick(b.dataset.v);
+  });
+}
+initSeg('#seg-mode', v => S.mode = v);
+initSeg('#seg-test', v => S.testament = v);
+
+function pickSeg(id, val){
+  [...$(id).children].forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===val)));
+}
+
+// 저장된 로그인 값 채우기
+(function restore(){
+  try{
+    const v = JSON.parse(localStorage.getItem(LS_KEY)||'null');
+    if(!v || !v.name) return;
+    $('#f-name').value = v.name;
+    $('#f-birth').value = v.birthDate||'';
+    S.mode = v.lastMode||'read';
+    S.testament = v.lastTestament||'NT';
+    pickSeg('#seg-mode', S.mode);
+    pickSeg('#seg-test', S.testament);
+  }catch(e){}
+})();
+
+$('#f-birth').addEventListener('input', e=>{
+  e.target.value = e.target.value.replace(/\D/g,'').slice(0,8);
+  e.target.classList.remove('err');
+  $('#birth-hint').classList.remove('err');
+});
+
+$('#btn-start').addEventListener('click', async ()=>{
+  const name = $('#f-name').value.trim();
+  const birth = $('#f-birth').value.trim();
+
+  if(name && !/^\d{8}$/.test(birth)){
+    $('#f-birth').classList.add('err');
+    const h = $('#birth-hint');
+    h.textContent = '이름을 적었으면 생년월일 8자리도 필요합니다. 예: 19900101';
+    h.classList.add('err');
+    $('#f-birth').focus();
+    return;
+  }
+
+  S.name = name;
+  S.birth = birth;
+  S.guest = !name;
+  S.progress = {};
+
+  if(!S.guest){
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      name:S.name, birthDate:S.birth, lastMode:S.mode, lastTestament:S.testament
+    }));
+  }
+
+  await enterMap();
+});
+
+$('#btn-logout').addEventListener('click', ()=>{
+  flush(true);
+  showLogin();
+});
+
+/* ============================================================
+   지도 진입
+   ============================================================ */
+async function enterMap(){
+  $('#who-name').textContent = S.guest ? '둘러보기' : S.name;
+  $('#who-meta').textContent =
+    (S.testament==='OT'?'구약':'신약') + ' · ' + (S.mode==='read'?'읽기 우선':'필사 우선');
+  $('#guest-banner').style.display = S.guest ? 'block' : 'none';
+  $('#btn-reset').style.display = S.guest ? 'none' : '';
+  $('#sync-note').textContent = S.guest
+    ? '이름을 적고 시작하면 진도가 저장됩니다.'
+    : (CONFIG.API_URL
+        ? '기기가 달라도 이름과 생년월일이 같으면 이어서 기록됩니다.'
+        : '지금은 이 브라우저에만 저장됩니다.');
+
+  showMap();
+  await loadSermons();
+  if(!S.guest) await loadProgress();
+  render();
+}
+
+/* ============================================================
+   설교 데이터
+   ============================================================ */
+async function loadSermons(){
+  if(Object.keys(S.sermons.NT).length || Object.keys(S.sermons.OT).length) return;
+  try{
+    const res = await fetch(CONFIG.SERMONS_URL);
+    if(!res.ok) throw new Error('not found');
+    S.sermons = await res.json();
+  }catch(e){
+    S.sermons = { OT:{}, NT:{} };
+    console.warn('sermons.json을 불러오지 못했습니다. 설교 목록 없이 표시합니다.');
+  }
+}
+
+/* ============================================================
+   진도 불러오기 / 저장
+   ============================================================ */
+function localKey(){
+  return 'gaonbit_progress_' + S.name + '_' + S.birth + '_' + S.testament;
+}
+
+async function loadProgress(){
+  if(CONFIG.API_URL){
+    try{
+      const q = new URLSearchParams({
+        action:'getProgress', name:S.name, birth_date:S.birth, testament:S.testament
+      });
+      const res = await fetch(CONFIG.API_URL + '?' + q);
+      const json = await res.json();
+      if(json.ok){ S.progress = json.data.progress || {}; return; }
+      toast('진도를 불러오지 못했습니다: ' + json.error.message);
+    }catch(e){
+      toast('연결이 원활하지 않아 저장된 기록만 표시합니다.');
+    }
+  }
+  try{ S.progress = JSON.parse(localStorage.getItem(localKey())||'{}'); }
+  catch(e){ S.progress = {}; }
+}
+
+function saveLocal(){
+  if(S.guest) return;
+  try{ localStorage.setItem(localKey(), JSON.stringify(S.progress)); }catch(e){}
+}
+
+/* 1~2초 모았다가 한 번에 전송 (Apps Script 동시 실행 제한 대응) */
+function queue(bookId, chapter){
+  if(S.guest || !CONFIG.API_URL) return;
+  S.pending[bookId + ':' + chapter] = true;
+  clearTimeout(S.timer);
+  S.timer = setTimeout(flush, 1500);
+}
+
+async function flush(silent){
+  clearTimeout(S.timer);
+  const keys = Object.keys(S.pending);
+  if(!keys.length || S.guest || !CONFIG.API_URL) return;
+  S.pending = {};
+
+  for(const k of keys){
+    const [bookId, ch] = k.split(':');
+    const st = (S.progress[bookId]||{})[ch] || {read:false, write:false};
+    const ok = await post({
+      action:'updateChapter',
+      name:S.name, birth_date:S.birth, testament:S.testament,
+      book_id:bookId, chapter:Number(ch),
+      read:st.read, write:st.write
+    });
+    if(!ok && !silent){ toast('저장하지 못했습니다. 잠시 후 다시 시도해주세요.'); return; }
+  }
+}
+
+/* 지수 백오프 재시도 */
+async function post(body, tries){
+  tries = tries || 0;
+  try{
+    const res = await fetch(CONFIG.API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},  // CORS preflight 회피
+      body:JSON.stringify(body)
+    });
+    const json = await res.json();
+    if(json.ok) return true;
+    if(json.error && json.error.code==='RATE_LIMITED' && tries<3){
+      await sleep(1000 * Math.pow(2,tries));
+      return post(body, tries+1);
+    }
+    return false;
+  }catch(e){
+    if(tries<3){ await sleep(1000*Math.pow(2,tries)); return post(body,tries+1); }
+    return false;
+  }
+}
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+/* ============================================================
+   상태 계산
+   ============================================================ */
+function stateOf(bookId, ch){
+  const st = (S.progress[bookId]||{})[ch];
+  if(!st) return '';
+  if(st.read && st.write) return 'both';
+  if(st.read) return 'read';
+  if(st.write) return 'write';
+  return '';
+}
+
+/* 없음 → 선택한 활동 → 둘다 → 없음 */
+function cycle(bookId, ch){
+  const cur = stateOf(bookId, ch);
+  const first = S.mode;                       // 'read' 또는 'write'
+  let next;
+  if(cur==='') next = first;
+  else if(cur===first) next = 'both';
+  else if(cur==='both') next = '';
+  else next = 'both';                         // 반대쪽만 켜져 있던 경우
+
+  if(!S.progress[bookId]) S.progress[bookId] = {};
+  S.progress[bookId][ch] = {
+    read: next==='read' || next==='both',
+    write: next==='write' || next==='both'
+  };
+  return next;
+}
+
+function countBook(bookId, total){
+  let r=0, w=0;
+  const b = S.progress[bookId]||{};
+  for(let i=1;i<=total;i++){
+    const st=b[i]; if(!st) continue;
+    if(st.read) r++;
+    if(st.write) w++;
+  }
+  return {r,w};
+}
+
+function sermonsFor(bookId){
+  return (S.sermons[S.testament]||{})[bookId] || [];
+}
+function chaptersWithSermon(bookId){
+  const set = new Set();
+  sermonsFor(bookId).forEach(s=>{
+    for(let c=s.chapter_from; c<=s.chapter_to; c++) set.add(c);
+  });
+  return set;
+}
+
+/* ============================================================
+   렌더
+   ============================================================ */
+function render(){
+  renderStats();
+  renderBooks();
+}
+
+function renderStats(){
+  let r=0, w=0;
+  for(const bid in S.progress){
+    for(const ch in S.progress[bid]){
+      const st = S.progress[bid][ch];
+      if(st.read) r++;
+      if(st.write) w++;
+    }
+  }
+  const total = TOTAL[S.testament];
+  $('#s-read').innerHTML  = Math.round(r/total*100) + '<small>%</small>';
+  $('#s-write').innerHTML = Math.round(w/total*100) + '<small>%</small>';
+  $('#s-read-n').textContent  = r.toLocaleString() + '장';
+  $('#s-write-n').textContent = w.toLocaleString() + '장';
+
+  let sc=0;
+  const list = S.sermons[S.testament]||{};
+  for(const k in list) sc += list[k].length;
+  $('#s-sermon').textContent = sc.toLocaleString();
+}
+
+function renderBooks(){
+  const wrap = $('#books');
+  wrap.innerHTML = '';
+  const label = S.mode==='read' ? '읽기' : '필사';
+
+  BOOKS[S.testament].forEach(([bid, bname, total])=>{
+    const {r,w} = countBook(bid, total);
+    const dots = chaptersWithSermon(bid);
+    const done = (S.mode==='read'?r:w) === total;
+
+    const el = document.createElement('article');
+    el.className = 'book';
+
+    const u = unitOf(bid);
+
+    let cells = '';
+    for(let c=1;c<=total;c++){
+      const st = stateOf(bid,c);
+      cells += `<button class="ch${dots.has(c)?' has-sermon':''}" data-s="${st}"
+        data-b="${bid}" data-c="${c}" data-t="${total}"
+        aria-label="${bname} ${c}${u}">${c}</button>`;
+    }
+
+    const sm = sermonsFor(bid);
+    let sermonHtml = '';
+    if(sm.length){
+      sermonHtml = `<div class="sermons"><div class="sermons-h">이 권의 설교 ${sm.length}편</div>` +
+        sm.map(s=>{
+          const range = s.chapter_from===s.chapter_to
+            ? `${s.chapter_from}${u}` : `${s.chapter_from}–${s.chapter_to}${u}`;
+          return `<a class="sermon" href="${s.youtube_url}" target="_blank" rel="noopener">
+            <span class="badge">${range}</span>
+            <span class="sermon-t">${esc(s.title)}</span>
+            <span class="sermon-p">${esc(s.preacher||'')}</span>
+          </a>`;
+        }).join('') + `</div>`;
+    }
+
+    el.innerHTML = `
+      <div class="book-head">
+        <div class="book-title">
+          <h3>${bname}</h3>
+          <div class="meta">읽기 <b>${r}</b>/${total} · 필사 <b>${w}</b>/${total}</div>
+        </div>
+        <button class="bulk" data-b="${bid}" data-t="${total}" aria-pressed="${done}">
+          <span class="box"></span>${label} 전체
+        </button>
+      </div>
+      <div class="grid">${cells}</div>
+      ${sermonHtml}`;
+    wrap.appendChild(el);
+  });
+}
+
+/* 시편만 '장'이 아니라 '편'을 씁니다 */
+function unitOf(bookId){ return bookId==='psa' ? '편' : '장'; }
+
+function esc(s){
+  return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+}
+
+/* ============================================================
+   상호작용
+   ============================================================ */
+$('#books').addEventListener('click', async e=>{
+  const cell = e.target.closest('.ch');
+  if(cell){
+    const bid = cell.dataset.b, ch = Number(cell.dataset.c), total = Number(cell.dataset.t);
+    const next = cycle(bid, ch);
+    cell.dataset.s = next;
+    saveLocal();
+    updateBookMeta(bid, total);
+    renderStats();
+    queue(bid, ch);
+    return;
+  }
+
+  const bulk = e.target.closest('.bulk');
+  if(bulk){
+    const bid = bulk.dataset.b, total = Number(bulk.dataset.t);
+    const on = bulk.getAttribute('aria-pressed') !== 'true';
+
+    if(!S.progress[bid]) S.progress[bid] = {};
+    for(let c=1;c<=total;c++){
+      const cur = S.progress[bid][c] || {read:false, write:false};
+      S.progress[bid][c] = {
+        read:  S.mode==='read'  ? on : cur.read,
+        write: S.mode==='write' ? on : cur.write
+      };
+    }
+    bulk.setAttribute('aria-pressed', String(on));
+    saveLocal();
+
+    // 해당 권 셀만 다시 칠하기
+    const grid = bulk.closest('.book').querySelector('.grid');
+    [...grid.children].forEach(c=>{ c.dataset.s = stateOf(bid, Number(c.dataset.c)); });
+    updateBookMeta(bid, total);
+    renderStats();
+
+    if(!S.guest && CONFIG.API_URL){
+      const ok = await post({
+        action:'updateBook',
+        name:S.name, birth_date:S.birth, testament:S.testament,
+        book_id:bid, mode:S.mode, value:on
+      });
+      toast(ok ? `${bulk.closest('.book').querySelector('h3').textContent} ${S.mode==='read'?'읽기':'필사'} ${on?'전체 완료':'전체 해제'}`
+               : '저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
+    }
+  }
+});
+
+function updateBookMeta(bid, total){
+  const {r,w} = countBook(bid,total);
+  const card = document.querySelector(`.bulk[data-b="${bid}"]`).closest('.book');
+  card.querySelector('.meta').innerHTML =
+    `읽기 <b>${r}</b>/${total} · 필사 <b>${w}</b>/${total}`;
+  const done = (S.mode==='read'?r:w) === total;
+  card.querySelector('.bulk').setAttribute('aria-pressed', String(done));
+}
+
+/* 진도 초기화 */
+$('#btn-reset').addEventListener('click', async ()=>{
+  const t = S.testament==='OT' ? '구약' : '신약';
+  if(!confirm(`${t} 진도를 모두 지웁니다.\n읽기와 필사 기록이 함께 사라지며 되돌릴 수 없습니다.\n\n계속할까요?`)) return;
+
+  S.progress = {};
+  saveLocal();
+  render();
+
+  if(CONFIG.API_URL){
+    const ok = await post({
+      action:'resetProgress',
+      name:S.name, birth_date:S.birth,
+      scope:'testament', testament:S.testament, mode:'both'
+    });
+    toast(ok ? `${t} 진도를 초기화했습니다.` : '초기화를 저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
+  }else{
+    toast(`${t} 진도를 초기화했습니다.`);
+  }
+});
+
+/* 페이지를 떠나기 전 남은 변경분 저장 */
+window.addEventListener('beforeunload', ()=>{ flush(true); });
+
+/* 토스트 */
+let toastTimer;
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('on'), 2600);
+}
+</script>
+</body>
+</html>
