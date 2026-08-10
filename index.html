@@ -235,9 +235,12 @@ button{cursor:pointer;border:none;background:none}
   flex:none;background:var(--navy);color:#E8D9B5;
   font-size:10.5px;padding:2px 6px;border-radius:4px;font-weight:700;
 }
-.sermon-t{flex:1;min-width:0;color:var(--ink,#2C2C2A)}
+.sermon-t{flex:1;min-width:0;color:var(--ink,#2C2C2A);word-break:keep-all;overflow-wrap:break-word}
 .sermon:active .sermon-t{text-decoration:underline}
-.sermon-p{flex:none;color:var(--navy-soft);font-size:11.5px;white-space:nowrap}
+.sermon-p{
+  flex:0 0 auto;max-width:88px;color:var(--navy-soft);font-size:11.5px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 
 /* ===== 하단 ===== */
 .foot{padding:30px 0 44px;text-align:center}
