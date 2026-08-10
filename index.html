@@ -332,7 +332,7 @@ button{cursor:pointer;border:none;background:none}
     <span class="sync-status" id="sync-status" data-st="idle" style="display:none">
       <i class="dot"></i><span id="sync-status-text">저장됨</span>
     </span>
-    <div class="eyebrow">가온빛교회</div>
+    <div class="eyebrow" id="who-eyebrow">가온빛교회</div>
     <h1 id="who-name">—</h1>
     <p id="who-meta">—</p>
   </header>
@@ -536,9 +536,9 @@ $('#btn-logout').addEventListener('click', ()=>{
 async function enterMap(){
   const testKor = S.testament==='OT' ? '구약' : '신약';
   const modeKor = S.mode==='read' ? '읽기' : '필사';
-  const who = S.guest ? '둘러보기' : S.name;
 
-  $('#who-name').textContent = `${who} ${testKor}성경 ${modeKor}지도`;
+  $('#who-eyebrow').textContent = S.guest ? '가온빛교회 · 둘러보기' : `가온빛교회 · ${S.name}`;
+  $('#who-name').textContent = `${testKor}성경 ${modeKor}지도`;
   $('#who-meta').textContent = `장을 눌러 ${modeKor} 완료를 표시하세요`;
   $('#guest-banner').style.display = S.guest ? 'block' : 'none';
   $('#btn-reset').style.display = S.guest ? 'none' : '';
