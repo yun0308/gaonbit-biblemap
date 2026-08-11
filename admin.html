@@ -76,7 +76,7 @@ tbody tr:active{background:#F8F5EC}
 
 .bar-cell{display:flex;align-items:center;gap:8px}
 .bar-mini{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:50px}
-.bar-mini i{display:block;height:100%;background:var(--gold)}
+.bar-mini i{display:block;height:100%;background:var(--navy)}
 .pct{font-size:12.5px;color:var(--navy-soft);white-space:nowrap;min-width:34px;text-align:right}
 .pct .cnt{color:#B7AF9C;font-size:11px}
 
@@ -277,7 +277,7 @@ function render(){
         <div class="bar-cell"><div class="bar-mini"><i style="width:${u.read_percent}%"></i></div><span class="pct">${u.read_percent}% <span class="cnt">(${u.read_count}/${u.total_chapters})</span></span></div>
       </td>
       <td class="num" data-label="필사">
-        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.write_percent}%;background:var(--navy)"></i></div><span class="pct">${u.write_percent}% <span class="cnt">(${u.write_count}/${u.total_chapters})</span></span></div>
+        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.write_percent}%;background:var(--gold)"></i></div><span class="pct">${u.write_percent}% <span class="cnt">(${u.write_count}/${u.total_chapters})</span></span></div>
       </td>
       <td data-label="최근 활동">${updated}</td>
       <td data-label="관리">

@@ -213,13 +213,13 @@ button{cursor:pointer;border:none;background:none}
 }
 .ch:active{transform:scale(.9)}
 /* 현재 활동(로그인 시 선택한 모드)은 채우기, 다른 활동은 테두리만 */
-body.mode-read .ch[data-s="primary"]{background:var(--gold);border-color:var(--gold);color:#4A3B14;font-weight:700}
-body.mode-read .ch[data-s="secondary"]{background:#F5F1E6;border:1.4px solid #A9B4C6;color:var(--navy-soft);font-weight:600}
-body.mode-read .ch[data-s="both"]{background:var(--gold);border:2px solid var(--navy);color:#4A3B14;font-weight:700}
+body.mode-read .ch[data-s="primary"]{background:var(--navy);border-color:var(--navy);color:var(--cream);font-weight:700}
+body.mode-read .ch[data-s="secondary"]{background:#F5F1E6;border:1.4px solid #DCC694;color:#9A8354;font-weight:600}
+body.mode-read .ch[data-s="both"]{background:var(--navy);border:2px solid var(--gold);color:var(--cream);font-weight:700}
 
-body.mode-write .ch[data-s="primary"]{background:var(--navy);border-color:var(--navy);color:var(--cream);font-weight:700}
-body.mode-write .ch[data-s="secondary"]{background:#F5F1E6;border:1.4px solid #DCC694;color:#9A8354;font-weight:600}
-body.mode-write .ch[data-s="both"]{background:var(--navy);border:2px solid var(--gold);color:var(--cream);font-weight:700}
+body.mode-write .ch[data-s="primary"]{background:var(--gold);border-color:var(--gold);color:#4A3B14;font-weight:700}
+body.mode-write .ch[data-s="secondary"]{background:#F5F1E6;border:1.4px solid #A9B4C6;color:var(--navy-soft);font-weight:600}
+body.mode-write .ch[data-s="both"]{background:var(--gold);border:2px solid var(--navy);color:#4A3B14;font-weight:700}
 
 .ch.has-sermon::after{
   content:"";position:absolute;top:-2px;right:-2px;
@@ -229,8 +229,8 @@ body.mode-write .ch[data-s="both"]{background:var(--navy);border:2px solid var(-
 
 .book-bar{height:4px;background:#EDE7D8;border-radius:2px;margin-top:11px;overflow:hidden;display:flex}
 .book-bar i{display:block;height:100%}
-.book-bar .b-read{background:var(--gold)}
-.book-bar .b-write{background:var(--navy)}
+.book-bar .b-read{background:var(--navy)}
+.book-bar .b-write{background:var(--gold)}
 
 .sermons{margin-top:11px;padding-top:10px;border-top:1px solid #EFE7D2;display:flex;flex-direction:column;gap:6px}
 .sermon{
@@ -554,12 +554,13 @@ async function enterMap(){
   document.body.classList.remove('mode-read','mode-write');
   document.body.classList.add('mode-' + S.mode);
 
-  const primaryColor = S.mode==='read' ? 'var(--gold)' : 'var(--navy)';
-  const secondaryColor = S.mode==='read' ? 'var(--navy)' : 'var(--gold)';
+  const primaryColor = S.mode==='read' ? 'var(--navy)' : 'var(--gold)';
+  const secondaryColor = S.mode==='read' ? 'var(--gold)' : 'var(--navy)';
+  const secondarySoft = S.mode==='read' ? '#DCC694' : '#A9B4C6';
   const secondaryKor = S.mode==='read' ? '필사' : '읽기';
   $('#legend').innerHTML = `
     <span><i style="background:${primaryColor}"></i>${modeKor}완료</span>
-    <span><i style="background:#F5F1E6;box-shadow:inset 0 0 0 2px ${secondaryColor}"></i>${secondaryKor}만 완료</span>
+    <span><i style="background:#F5F1E6;box-shadow:inset 0 0 0 1.4px ${secondarySoft}"></i>${secondaryKor}만 완료</span>
     <span><i style="background:${primaryColor};box-shadow:inset 0 0 0 2px ${secondaryColor}"></i>둘 다 완료</span>
     <span><i class="lg-dot"></i>설교 있는 장</span>
   `;
