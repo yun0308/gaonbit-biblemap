@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>관리자 · 가온빛교회 성경 읽기·필사 지도</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF7F0; --cream-2:#FFFFFF;
+  --navy:#1B2A4A; --navy-soft:#5B6A87;
+  --gold:#C9A961; --line:#E7E0CE;
+  --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  background:var(--cream);color:var(--navy);line-height:1.6;font-size:16px;
+}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+.wrap{max-width:800px;margin:0 auto;padding:0 18px 60px}
+
+header{background:var(--navy);color:var(--cream);padding:26px 20px 22px;text-align:center}
+header .eyebrow{letter-spacing:.15em;font-size:11px;color:#E8D9B5;text-transform:uppercase;font-weight:600;margin-bottom:.5rem}
+header h1{font-family:'Gowun Batang',serif;font-size:22px;font-weight:700}
+
+/* ===== 키 입력 화면 ===== */
+#gate{max-width:400px;margin:60px auto;padding:0 20px}
+#gate .field label{display:block;font-size:14px;font-weight:700;margin-bottom:8px}
+#gate input{
+  width:100%;padding:14px 15px;border:1.5px solid var(--line);border-radius:var(--r);
+  background:var(--cream-2);font-size:16px;
+}
+#gate button{
+  width:100%;padding:15px;margin-top:14px;background:var(--navy);color:var(--cream);
+  border-radius:var(--r);font-size:16px;font-weight:700;
+}
+#gate .err{color:#A8442F;font-size:13.5px;margin-top:10px;display:none}
+
+/* ===== 대시보드 ===== */
+#dash{display:none}
+.toolbar{
+  display:flex;gap:10px;align-items:center;margin:20px 0 16px;flex-wrap:wrap;
+}
+.toolbar select, .toolbar button{
+  padding:10px 14px;border:1.5px solid var(--line);border-radius:8px;
+  background:var(--cream-2);font-size:14px;font-weight:600;
+}
+.toolbar .refresh{color:var(--navy-soft)}
+.toolbar .spacer{flex:1}
+
+.summary{
+  display:flex;gap:1px;background:#DFDAC6;border-radius:10px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(27,42,74,.08);margin-bottom:18px;
+}
+.summary .s{flex:1;background:#fff;padding:16px 10px;text-align:center}
+.summary .s .v{font-size:24px;font-weight:800;color:#1F2B46}
+.summary .s .k{font-size:12px;color:#8D8B83;margin-top:4px}
+
+table{width:100%;border-collapse:collapse;background:var(--cream-2);border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+thead th{
+  text-align:left;font-size:12.5px;color:var(--navy-soft);font-weight:700;
+  padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap;
+  cursor:pointer;user-select:none;
+}
+thead th.num{text-align:right}
+thead th:hover{color:var(--navy)}
+thead th .arrow{font-size:10px;margin-left:3px;opacity:.5}
+tbody td{padding:12px 14px;border-bottom:1px solid #F0ECE0;font-size:14px}
+tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:active{background:#F8F5EC}
+
+.bar-cell{display:flex;align-items:center;gap:8px}
+.bar-mini{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:50px}
+.bar-mini i{display:block;height:100%;background:var(--gold)}
+.pct{font-size:12.5px;color:var(--navy-soft);white-space:nowrap;min-width:34px;text-align:right}
+
+.empty{text-align:center;padding:50px 20px;color:var(--navy-soft)}
+.loading{text-align:center;padding:50px 20px;color:var(--navy-soft)}
+
+@media (max-width:520px){
+  table, thead, tbody, tr, td, th{display:block}
+  thead{display:none}
+  tbody tr{
+    border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:12px 14px;
+    background:var(--cream-2);
+  }
+  tbody td{border:none;padding:5px 0;display:flex;justify-content:space-between;align-items:center}
+  tbody td::before{content:attr(data-label);font-size:12px;color:var(--navy-soft);font-weight:600}
+  tbody td.name-cell::before{display:none}
+  tbody td.name-cell{font-weight:700;font-size:16px;padding-bottom:8px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">가온빛교회 · 관리자</div>
+  <h1>참여자 진도 현황</h1>
+</header>
+
+<div id="gate">
+  <div class="field">
+    <label for="f-key">관리자 키</label>
+    <input id="f-key" type="password" placeholder="Apps Script에 설정한 ADMIN_KEY">
+  </div>
+  <button id="btn-enter">조회</button>
+  <p class="err" id="gate-err">키가 올바르지 않거나 연결에 실패했습니다.</p>
+</div>
+
+<div id="dash">
+  <div class="wrap">
+    <div class="toolbar">
+      <select id="f-testament">
+        <option value="">전체</option>
+        <option value="NT">신약</option>
+        <option value="OT">구약</option>
+      </select>
+      <span class="spacer"></span>
+      <button class="refresh" id="btn-refresh">새로고침</button>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div id="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-k="name">이름<span class="arrow"></span></th>
+            <th data-k="testament">성경<span class="arrow"></span></th>
+            <th class="num" data-k="read_percent">읽기<span class="arrow"></span></th>
+            <th class="num" data-k="write_percent">필사<span class="arrow"></span></th>
+            <th data-k="last_updated">최근 활동<span class="arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Apps Script 웹앱 URL — index.html과 동일한 값을 넣으세요 */
+const API_URL = 'https://script.google.com/macros/s/AKfycbzHjZ10cYdtHiHeVCf5qy65cKwHT7AmRb9ZeghiTrW-2KQ7xlcjdpkMJ0RkdN9Znkgc/exec';
+
+const $ = s => document.querySelector(s);
+let adminKey = '';
+let rows = [];
+let sortKey = 'read_percent';
+let sortDir = -1;
+
+$('#btn-enter').addEventListener('click', load);
+$('#f-key').addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
+
+async function load(){
+  const key = $('#f-key').value.trim();
+  if(!key) return;
+  adminKey = key;
+  $('#gate-err').style.display = 'none';
+
+  try{
+    const testament = $('#f-testament').value;
+    const q = new URLSearchParams({ action:'getAllProgress', admin_key: adminKey });
+    if(testament) q.set('testament', testament);
+    const res = await fetch(API_URL + '?' + q);
+    const json = await res.json();
+    if(!json.ok){
+      $('#gate-err').textContent = json.error.message || '조회에 실패했습니다.';
+      $('#gate-err').style.display = 'block';
+      return;
+    }
+    rows = json.data.users || [];
+    $('#gate').style.display = 'none';
+    $('#dash').style.display = 'block';
+    render();
+  }catch(e){
+    $('#gate-err').textContent = '연결에 실패했습니다. API 주소나 네트워크를 확인해주세요.';
+    $('#gate-err').style.display = 'block';
+  }
+}
+
+$('#btn-refresh').addEventListener('click', load);
+$('#f-testament').addEventListener('change', load);
+
+document.querySelectorAll('thead th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const k = th.dataset.k;
+    if(sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = -1; }
+    render();
+  });
+});
+
+function render(){
+  renderSummary();
+  const sorted = [...rows].sort((a,b)=>{
+    let av = a[sortKey], bv = b[sortKey];
+    if(typeof av === 'string') return av.localeCompare(bv) * sortDir;
+    return ((av||0) - (bv||0)) * sortDir;
+  });
+
+  document.querySelectorAll('thead th').forEach(th=>{
+    th.querySelector('.arrow').textContent = th.dataset.k===sortKey ? (sortDir===1?'▲':'▼') : '';
+  });
+
+  const tbody = $('#tbody');
+  if(!sorted.length){
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty">아직 참여자 데이터가 없습니다.</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = sorted.map(u=>{
+    const testKor = u.testament==='OT' ? '구약' : '신약';
+    const updated = u.last_updated ? new Date(u.last_updated).toLocaleDateString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    return `<tr>
+      <td class="name-cell" data-label="이름">${esc(u.name)}</td>
+      <td data-label="성경">${testKor}</td>
+      <td class="num" data-label="읽기">
+        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.read_percent}%"></i></div><span class="pct">${u.read_percent}%</span></div>
+      </td>
+      <td class="num" data-label="필사">
+        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.write_percent}%;background:var(--navy)"></i></div><span class="pct">${u.write_percent}%</span></div>
+      </td>
+      <td data-label="최근 활동">${updated}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSummary(){
+  const n = rows.length;
+  const avgRead = n ? Math.round(rows.reduce((s,u)=>s+u.read_percent,0)/n) : 0;
+  const avgWrite = n ? Math.round(rows.reduce((s,u)=>s+u.write_percent,0)/n) : 0;
+  $('#summary').innerHTML = `
+    <div class="s"><div class="v">${n}</div><div class="k">참여자 수</div></div>
+    <div class="s"><div class="v">${avgRead}%</div><div class="k">평균 읽기 진도</div></div>
+    <div class="s"><div class="v">${avgWrite}%</div><div class="k">평균 필사 진도</div></div>
+  `;
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+}
+</script>
+</body>
+</html>
