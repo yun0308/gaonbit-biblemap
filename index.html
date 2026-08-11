@@ -250,6 +250,15 @@ body.mode-write .ch[data-s="both"]{background:var(--navy);border:2px solid var(-
 
 /* ===== 하단 ===== */
 .foot{padding:30px 0 44px;text-align:center}
+
+#loading{padding:60px 20px;text-align:center;color:var(--navy-soft)}
+#loading .spin{
+  width:30px;height:30px;margin:0 auto 14px;
+  border:3px solid var(--line);border-top-color:var(--navy);
+  border-radius:50%;animation:spin .8s linear infinite;
+}
+#loading p{font-size:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
 .btn-reset{
   padding:12px 22px;border:1.5px solid var(--line);border-radius:9px;
   background:var(--cream-2);font-size:14.5px;color:var(--navy-soft);font-weight:600;
@@ -370,6 +379,10 @@ body.mode-write .ch[data-s="both"]{background:var(--navy);border:2px solid var(-
     <div class="legend" id="legend"></div>
 
     <div id="books"></div>
+    <div id="loading" style="display:none">
+      <div class="spin"></div>
+      <p>불러오는 중…</p>
+    </div>
 
     <div class="foot">
       <button class="btn-reset" id="btn-reset">진도 초기화</button>
@@ -563,8 +576,14 @@ async function enterMap(){
         : '지금은 이 브라우저에만 저장됩니다.');
 
   showMap();
+  $('#loading').style.display = 'block';
+  $('#books').style.display = 'none';
+
   await loadSermons();
   if(!S.guest) await loadProgress();
+
+  $('#loading').style.display = 'none';
+  $('#books').style.display = '';
   render();
 }
 
@@ -781,16 +800,14 @@ function renderStats(){
 
 function renderBooks(){
   const wrap = $('#books');
-  wrap.innerHTML = '';
   const label = S.mode==='read' ? '읽기' : '필사';
   const bookMap = {};
   BOOKS[S.testament].forEach(b => bookMap[b[0]] = b);
 
+  const html = [];
+
   GROUPS[S.testament].forEach(group=>{
-    const gEl = document.createElement('div');
-    gEl.className = 'group-title';
-    gEl.textContent = group.label;
-    wrap.appendChild(gEl);
+    html.push(`<div class="group-title">${group.label}</div>`);
 
     group.ids.forEach(bid=>{
       const [, bname, total] = bookMap[bid];
@@ -798,9 +815,6 @@ function renderBooks(){
       const dots = chaptersWithSermon(bid);
       const done = (S.mode==='read'?r:w) === total;
       const u = unitOf(bid);
-
-      const el = document.createElement('article');
-      el.className = 'book';
 
       let cells = '';
       for(let c=1;c<=total;c++){
@@ -825,7 +839,7 @@ function renderBooks(){
           }).join('') + `</div>`;
       }
 
-      el.innerHTML = `
+      html.push(`<article class="book">
         <div class="book-head">
           <div class="name-group">
             <span class="name">${bname}</span>
@@ -840,10 +854,12 @@ function renderBooks(){
         <div class="book-bar" aria-hidden="true">
           <i class="b-read" style="width:${(r/total*100)}%"></i>
           <i class="b-write" style="width:${(w/total*100)}%"></i>
-        </div>`;
-      wrap.appendChild(el);
+        </div>
+      </article>`);
     });
   });
+
+  wrap.innerHTML = html.join('');
 }
 
 /* 시편만 '장'이 아니라 '편'을 씁니다 */
