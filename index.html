@@ -539,8 +539,16 @@ $('#btn-start').addEventListener('click', async ()=>{
   await enterMap();
 });
 
-$('#btn-logout').addEventListener('click', ()=>{
-  flush(true);
+$('#btn-logout').addEventListener('click', async ()=>{
+  const btn = $('#btn-logout');
+  const label = btn.textContent;
+  if(Object.keys(S.pending).length){
+    btn.textContent = '저장 중…';
+    btn.disabled = true;
+    await flush(true);
+  }
+  btn.textContent = label;
+  btn.disabled = false;
   showLogin();
 });
 
@@ -732,22 +740,17 @@ function displayState(bookId, ch){
   return '';
 }
 
-/* 없음 → 선택한 활동 → 둘다 → 없음 */
+/* 현재 모드(읽기 또는 필사)의 활동만 독립적으로 켜짐/꺼짐 토글.
+   반대쪽 활동(다른 모드에서 기록한 값)은 절대 건드리지 않는다. */
 function cycle(bookId, ch){
-  const cur = stateOf(bookId, ch);
-  const first = S.mode;                       // 'read' 또는 'write'
-  let next;
-  if(cur==='') next = first;
-  else if(cur===first) next = 'both';
-  else if(cur==='both') next = '';
-  else next = 'both';                         // 반대쪽만 켜져 있던 경우
-
   if(!S.progress[bookId]) S.progress[bookId] = {};
+  const cur = S.progress[bookId][ch] || {read:false, write:false};
+  const turnOn = !cur[S.mode];
+
   S.progress[bookId][ch] = {
-    read: next==='read' || next==='both',
-    write: next==='write' || next==='both'
+    read:  S.mode==='read'  ? turnOn : cur.read,
+    write: S.mode==='write' ? turnOn : cur.write
   };
-  return next;
 }
 
 function countBook(bookId, total){
@@ -934,9 +937,15 @@ function updateBookMeta(bid, total){
 /* 진도 초기화 */
 $('#btn-reset').addEventListener('click', async ()=>{
   const t = S.testament==='OT' ? '구약' : '신약';
-  if(!confirm(`${t} 진도를 모두 지웁니다.\n읽기와 필사 기록이 함께 사라지며 되돌릴 수 없습니다.\n\n계속할까요?`)) return;
+  const modeKor = S.mode==='read' ? '읽기' : '필사';
+  if(!confirm(`${t} ${modeKor} 진도만 지웁니다.\n(${S.mode==='read'?'필사':'읽기'} 기록은 그대로 남습니다)\n되돌릴 수 없습니다.\n\n계속할까요?`)) return;
 
-  S.progress = {};
+  // 현재 모드의 활동만 지우고, 반대쪽 활동은 그대로 둔다
+  for(const bid in S.progress){
+    for(const ch in S.progress[bid]){
+      S.progress[bid][ch][S.mode] = false;
+    }
+  }
   saveLocal();
   render();
 
@@ -944,11 +953,11 @@ $('#btn-reset').addEventListener('click', async ()=>{
     const ok = await post({
       action:'resetProgress',
       name:S.name, birth_date:S.birth,
-      scope:'testament', testament:S.testament, mode:'both'
+      scope:'testament', testament:S.testament, mode:S.mode
     });
-    toast(ok ? `${t} 진도를 초기화했습니다.` : '초기화를 저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
+    toast(ok ? `${t} ${modeKor} 진도를 초기화했습니다.` : '초기화를 저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
   }else{
-    toast(`${t} 진도를 초기화했습니다.`);
+    toast(`${t} ${modeKor} 진도를 초기화했습니다.`);
   }
 });
 
