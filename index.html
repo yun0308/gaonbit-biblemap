@@ -214,11 +214,11 @@ button{cursor:pointer;border:none;background:none}
 .ch:active{transform:scale(.9)}
 /* 현재 활동(로그인 시 선택한 모드)은 채우기, 다른 활동은 테두리만 */
 body.mode-read .ch[data-s="primary"]{background:var(--gold);border-color:var(--gold);color:#4A3B14;font-weight:700}
-body.mode-read .ch[data-s="secondary"]{background:#F5F1E6;border:2px solid var(--navy);color:var(--navy);font-weight:700}
+body.mode-read .ch[data-s="secondary"]{background:#F5F1E6;border:1.4px solid #A9B4C6;color:var(--navy-soft);font-weight:600}
 body.mode-read .ch[data-s="both"]{background:var(--gold);border:2px solid var(--navy);color:#4A3B14;font-weight:700}
 
 body.mode-write .ch[data-s="primary"]{background:var(--navy);border-color:var(--navy);color:var(--cream);font-weight:700}
-body.mode-write .ch[data-s="secondary"]{background:#F5F1E6;border:2px solid var(--gold);color:#7A5D10;font-weight:700}
+body.mode-write .ch[data-s="secondary"]{background:#F5F1E6;border:1.4px solid #DCC694;color:#9A8354;font-weight:600}
 body.mode-write .ch[data-s="both"]{background:var(--navy);border:2px solid var(--gold);color:var(--cream);font-weight:700}
 
 .ch.has-sermon::after{
@@ -318,8 +318,8 @@ body.mode-write .ch[data-s="both"]{background:var(--navy);border:2px solid var(-
     <div class="field">
       <label>성경</label>
       <div class="seg" id="seg-test">
-        <button type="button" data-v="NT" aria-pressed="true">신약</button>
         <button type="button" data-v="OT" aria-pressed="false">구약</button>
+        <button type="button" data-v="NT" aria-pressed="true">신약</button>
       </div>
     </div>
 
