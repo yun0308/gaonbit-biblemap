@@ -310,10 +310,10 @@ body.mode-write .ch[data-s="both"]{background:var(--gold);border:2px solid var(-
     </div>
 
     <div class="field">
-      <label for="f-birth">생년월일 <span class="opt">이름을 적었다면 필수</span></label>
-      <input id="f-birth" type="tel" inputmode="numeric" maxlength="8" autocomplete="bday"
-             placeholder="19900101">
-      <p class="hint" id="birth-hint">숫자 8자리로 입력해주세요 (예: 19900101)</p>
+      <label for="f-birth">생일 <span class="opt">이름을 적었다면 필수, 월일 4자리</span></label>
+      <input id="f-birth" type="tel" inputmode="numeric" maxlength="4" autocomplete="bday"
+             placeholder="0101">
+      <p class="hint" id="birth-hint">숫자 4자리로 입력해주세요 (예: 1월 1일 → 0101)</p>
     </div>
 
     <div class="field">
@@ -386,7 +386,7 @@ body.mode-write .ch[data-s="both"]{background:var(--gold);border:2px solid var(-
 
     <div class="foot">
       <button class="btn-reset" id="btn-reset">진도 초기화</button>
-      <p id="sync-note">기기가 달라도 이름과 생년월일이 같으면 이어서 기록됩니다.</p>
+      <p id="sync-note">기기가 달라도 이름과 생일이 같으면 이어서 기록됩니다.</p>
     </div>
   </div>
 </section>
@@ -507,7 +507,7 @@ function pickSeg(id, val){
 })();
 
 $('#f-birth').addEventListener('input', e=>{
-  e.target.value = e.target.value.replace(/\D/g,'').slice(0,8);
+  e.target.value = e.target.value.replace(/\D/g,'').slice(0,4);
   e.target.classList.remove('err');
   $('#birth-hint').classList.remove('err');
 });
@@ -516,10 +516,10 @@ $('#btn-start').addEventListener('click', async ()=>{
   const name = $('#f-name').value.trim();
   const birth = $('#f-birth').value.trim();
 
-  if(name && !/^\d{8}$/.test(birth)){
+  if(name && !/^\d{4}$/.test(birth)){
     $('#f-birth').classList.add('err');
     const h = $('#birth-hint');
-    h.textContent = '이름을 적었으면 생년월일 8자리도 필요합니다. 예: 19900101';
+    h.textContent = '이름을 적었으면 생일 4자리도 필요합니다. 예: 1월 1일 → 0101';
     h.classList.add('err');
     $('#f-birth').focus();
     return;
@@ -581,7 +581,7 @@ async function enterMap(){
   $('#sync-note').textContent = S.guest
     ? '이름을 적고 시작하면 진도가 저장됩니다.'
     : (CONFIG.API_URL
-        ? '기기가 달라도 이름과 생년월일이 같으면 이어서 기록됩니다.'
+        ? '기기가 달라도 이름과 생일이 같으면 이어서 기록됩니다.'
         : '지금은 이 브라우저에만 저장됩니다.');
 
   showMap();
