@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>도움말 · 성경 읽기·필사 지도</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF7F0; --cream-2:#FFFFFF;
+  --navy:#1B2A4A; --navy-soft:#5B6A87;
+  --gold:#C9A961; --line:#E7E0CE;
+  --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  background:var(--cream);color:var(--navy);line-height:1.75;font-size:19px;
+  padding-bottom:60px;
+}
+a{color:inherit}
+.wrap{max-width:640px;margin:0 auto;padding:0 22px}
+
+header{background:var(--navy);color:var(--cream);padding:34px 22px 30px;text-align:center}
+header .ring{
+  width:64px;height:64px;margin:0 auto 16px;border:1.5px solid var(--gold);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:#fff;font-size:26px;
+}
+header .eyebrow{letter-spacing:.15em;font-size:13px;color:#E8D9B5;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+header h1{font-family:'Gowun Batang',serif;font-size:28px;font-weight:700}
+header p{margin-top:8px;font-size:15px;color:#B9C2D6}
+
+nav.toc{
+  background:var(--cream-2);border:1px solid var(--line);border-radius:var(--r);
+  margin:24px 0;padding:6px 20px;
+}
+nav.toc a{
+  display:block;padding:14px 0;border-bottom:1px solid #F0ECE0;
+  text-decoration:none;font-weight:700;font-size:17px;color:var(--navy);
+}
+nav.toc a:last-child{border-bottom:none}
+nav.toc a::before{content:"→ ";color:var(--gold)}
+
+section{margin:40px 0}
+section h2{
+  font-family:'Gowun Batang',serif;font-size:24px;font-weight:700;color:var(--navy);
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;scroll-margin-top:16px;
+}
+section h2 .num{
+  flex:none;width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;
+}
+section > p.lead{color:var(--navy-soft);font-size:17px;margin-bottom:18px}
+
+ol.steps{list-style:none;margin:18px 0}
+ol.steps li{
+  display:flex;gap:14px;margin-bottom:16px;font-size:18px;align-items:flex-start;
+}
+ol.steps li .n{
+  flex:none;width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--navy);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;margin-top:2px;
+}
+ul.bullets{margin:18px 0 18px 20px;font-size:18px}
+ul.bullets li{margin-bottom:12px}
+ul.bullets li::marker{color:var(--gold)}
+
+.box{
+  background:var(--cream-2);border:1px solid var(--line);border-radius:var(--r);
+  padding:20px 22px;margin:18px 0;font-size:17.5px;
+}
+.box.gold{background:#FBF6EA;border-color:#DCC694}
+.box.navy{background:var(--navy);color:var(--cream);border:none}
+.box .lbl{font-weight:700;display:block;margin-bottom:8px;font-size:18px}
+.box.navy .lbl{color:var(--gold)}
+
+table.legend{width:100%;border-collapse:collapse;margin:18px 0}
+table.legend td{padding:14px 10px;border-bottom:1px solid #F0ECE0;font-size:18px;vertical-align:middle}
+table.legend td:first-child{width:56px}
+.swatch{display:inline-block;width:34px;height:34px;border-radius:8px}
+
+.faq-q{font-weight:700;font-size:18.5px;margin:24px 0 8px;color:var(--navy)}
+.faq-q .qm{color:var(--gold);margin-right:6px}
+.faq-a{font-size:17.5px;color:#3A4560}
+
+.closing{
+  background:var(--navy);color:var(--cream);border-radius:16px;
+  padding:32px 26px;margin:48px 0;text-align:center;
+}
+.closing .ring{
+  width:56px;height:56px;margin:0 auto 18px;border:1.5px solid var(--gold);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:var(--navy);font-size:22px;
+}
+.closing .cap{letter-spacing:.12em;font-size:12.5px;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:16px}
+.closing p{font-size:17px;line-height:1.85;margin-bottom:6px}
+.closing .sp{height:14px}
+
+footer{margin-top:50px;text-align:center}
+footer .app-link{
+  display:block;margin-top:24px;font-size:14px;color:var(--navy-soft);
+}
+footer .app-link b{color:var(--navy)}
+
+@media (min-width:700px){
+  body{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="ring">📖</div>
+  <h1>도움말</h1>
+  <p>성경 읽기·필사 지도 사용 안내</p>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <a href="#s1">1. 시작하기</a>
+  <a href="#s2">2. 지도 화면 살펴보기</a>
+  <a href="#s3">3. 장(章) 체크하기</a>
+  <a href="#s4">4. 권 전체 체크 · 설교 영상</a>
+  <a href="#s5">5. 다른 기기에서 이어보기 · 초기화</a>
+  <a href="#s6">6. 자주 묻는 질문</a>
+</nav>
+
+<section id="s1">
+  <h2><span class="num">1</span>시작하기</h2>
+  <p class="lead">처음 접속하면 가장 먼저 보이는 로그인 화면입니다.</p>
+  <ol class="steps">
+    <li><span class="n">1</span><span><b>이름</b>을 입력합니다. (선택 사항)</span></li>
+    <li><span class="n">2</span><span><b>생일</b> 4자리를 입력합니다. (예: 1월 1일 → 0101) — 이름을 적으면 필수</span></li>
+    <li><span class="n">3</span><span>먼저 기록할 활동을 고릅니다 — 읽기 또는 필사</span></li>
+    <li><span class="n">4</span><span>성경을 고릅니다 — 구약 또는 신약</span></li>
+    <li><span class="n">5</span><span>[시작]을 누르면 지도 화면으로 이동합니다</span></li>
+  </ol>
+  <div class="box">
+    <span class="lbl">왜 이름과 생일이 필요한가요?</span>
+    동명이인이 있어도 진도가 섞이지 않게 하는 구분 값입니다. 비밀번호가 아니며, 같은 값을 다시 입력하면 언제 어디서든 진도를 이어볼 수 있습니다.
+  </div>
+  <div class="box gold">
+    <span class="lbl">이름 없이 시작하면? (둘러보기 모드)</span>
+    지도는 구경할 수 있지만 체크한 내용이 저장되지 않습니다. 진도를 남기려면 반드시 이름을 입력해주세요.
+  </div>
+</section>
+
+<section id="s2">
+  <h2><span class="num">2</span>지도 화면 살펴보기</h2>
+  <p class="lead">로그인 후 보이는 화면의 구성 요소입니다.</p>
+  <ul class="bullets">
+    <li><b>상단 남색 영역</b> — 지금 보고 있는 지도 이름과 내 이름이 표시됩니다</li>
+    <li><b>구약/신약 바로가기 버튼</b> — 누르면 반대쪽 성경으로 바로 전환됩니다</li>
+    <li><b>통계 카드 4개</b> — 전체 진도(%), 완료한 장, 전체 장 수, 연결된 설교 편수</li>
+    <li><b>범례</b> — 각 색상이 무엇을 뜻하는지 설명</li>
+    <li><b>책 목록</b> — 소분류(모세오경 / 역사서 / 시가서 등)로 묶여서 권별로 나열</li>
+    <li><b>처음화면으로</b> — 로그인 화면으로 복귀. 진도는 저장된 상태로 유지됨</li>
+  </ul>
+  <div class="box">
+    화면 좌측 상단에 <b>"저장 중… / 저장됨"</b> 표시가 나타납니다. 이 표시가 저장됨으로 바뀔 때까지 기다렸다가 화면을 벗어나는 것을 권장합니다.
+  </div>
+</section>
+
+<section id="s3">
+  <h2><span class="num">3</span>장(章) 체크하기</h2>
+  <p class="lead">각 권 카드 안의 숫자 칸을 눌러 진도를 표시합니다.</p>
+  <div class="box">
+    <span class="lbl">읽기와 필사는 서로 완전히 독립적입니다</span>
+    "읽기지도"에서 장을 누르면 읽기 상태만 바뀌고, 필사 기록에는 전혀 영향을 주지 않습니다.
+  </div>
+  <table class="legend">
+    <tr><td><span class="swatch" style="background:#1B2A4A"></span></td><td><b>읽기완료</b> — 읽기지도에서 진하게 채워진 칸</td></tr>
+    <tr><td><span class="swatch" style="background:#F5F1E6;border:2.5px solid #A9B4C6"></span></td><td><b>필사만 완료</b> — 옅은 테두리로만 표시</td></tr>
+    <tr><td><span class="swatch" style="background:#1B2A4A;border:3px solid #C9A961"></span></td><td><b>둘 다 완료</b> — 읽기와 필사를 모두 마친 장</td></tr>
+    <tr><td><span class="swatch" style="background:#F5F1E6;border:1px solid #E4DECF;position:relative"><span style="position:absolute;top:-5px;right:-5px;width:10px;height:10px;border-radius:50%;background:#1B2A4A;display:inline-block"></span></span></td><td><b>점 표시</b> — 그 장에 연결된 설교가 있다는 뜻</td></tr>
+  </table>
+  <div class="box gold">필사지도로 들어가면 색이 반대로 적용됩니다 — 필사완료가 진하게, 읽기만 완료는 옅은 테두리로 표시됩니다.</div>
+</section>
+
+<section id="s4">
+  <h2><span class="num">4</span>권 전체 체크 · 설교 영상</h2>
+  <p class="lead">한 권을 처음부터 끝까지 다 읽었다면 장을 하나씩 누를 필요가 없습니다.</p>
+  <ol class="steps">
+    <li><span class="n">1</span><span>권 이름 바로 옆의 작은 체크박스를 누릅니다</span></li>
+    <li><span class="n">2</span><span>그 권의 모든 장이 지금 활동 기준으로 한번에 완료 처리됩니다</span></li>
+    <li><span class="n">3</span><span>다시 누르면 그 활동만 전체 초기화됩니다 (반대 활동은 유지)</span></li>
+  </ol>
+  <p class="lead" style="margin-top:28px">각 권 카드 아래쪽엔 그 권과 관련된 설교 목록이 나옵니다.</p>
+  <ul class="bullets">
+    <li>제목 왼쪽 배지(예: "5장")는 그 설교가 다루는 본문 범위입니다</li>
+    <li>제목 오른쪽에는 설교자 이름이 표시됩니다</li>
+    <li>목록을 누르면 해당 유튜브 설교 영상으로 바로 이동합니다</li>
+  </ul>
+</section>
+
+<section id="s5">
+  <h2><span class="num">5</span>다른 기기에서 이어보기 · 초기화</h2>
+  <div class="box">
+    같은 주소로 접속해서 <b>똑같은 이름과 생일</b>을 입력하기만 하면 됩니다. 진도는 기기가 아니라 이름+생일 기준으로 저장됩니다.
+  </div>
+  <div class="box gold">
+    <span class="lbl">주의</span>
+    이름·생일을 하나라도 다르게 입력하면 새로운 사람으로 인식되어 진도가 안 보입니다.
+  </div>
+  <p class="lead" style="margin-top:28px">화면 맨 아래 [진도 초기화] 버튼을 누르면 지금 보고 있는 활동의 진도가 전부 지워집니다.</p>
+  <div class="box navy">
+    <span class="lbl">되돌릴 수 없습니다</span>
+    초기화 전에 확인 창이 한 번 더 뜨니, 정말 지우려는 게 맞는지 확인하고 눌러주세요. 반대쪽 활동 기록은 영향받지 않습니다.
+  </div>
+</section>
+
+<section id="s6">
+  <h2><span class="num">6</span>자주 묻는 질문</h2>
+
+  <div class="faq-q"><span class="qm">Q.</span>이름을 안 넣고 시작했는데 진도가 사라졌어요.</div>
+  <div class="faq-a">둘러보기 모드는 애초에 저장이 안 됩니다. [처음화면으로]에서 이름을 넣고 다시 시작해주세요.</div>
+
+  <div class="faq-q"><span class="qm">Q.</span>시편은 왜 "장"이 아니라 "편"이라고 나와요?</div>
+  <div class="faq-a">시편만 원래 "편"이라는 단위를 씁니다. 다른 성경은 전부 "장"으로 표시됩니다.</div>
+
+  <div class="faq-q"><span class="qm">Q.</span>화면 로딩이 조금 느린 것 같아요.</div>
+  <div class="faq-a">진도를 불러오는 동안 잠깐 지연이 있을 수 있습니다("불러오는 중…" 표시). 정상적인 지연이니 잠시 기다려주세요.</div>
+
+  <div class="faq-q"><span class="qm">Q.</span>예전에 필사했던 기록이 읽기 화면에서 옅게 보여요. 지워질까요?</div>
+  <div class="faq-a">아닙니다. 읽기 화면에서는 읽기만 조작되므로 필사 기록은 안전하게 유지됩니다.</div>
+</section>
+
+<div class="closing">
+  <div class="ring">📖</div>
+  <div class="cap">만든이의 글</div>
+  <p>성경을 필사하다 보면 정작 그 말씀이 품은 뜻을 놓칠 때가 많습니다.</p>
+  <p>지금 내가 어디를 지나고 있는지. 이 본문이 어떤 의미를 지니는지. 막막해지는 순간이 누구에게나 있을 것입니다.</p>
+  <p>그럴 때 그 말씀에 해당하는 예배의 설교가 지도가되어 다시 우리가 가야 할 길을 인도해줄 수 있을 거라고 생각했습니다.</p>
+  <div class="sp"></div>
+  <p>오늘도 성경지도를 통해</p>
+  <p>말씀을 읽고 필사하는 시간이 더욱 깊어지기를 소망합니다.</p>
+</div>
+
+<footer>
+  <a class="app-link" href="index.html">← 성경 읽기·필사 지도로 돌아가기</a>
+</footer>
+
+</div>
+</body>
+</html>
