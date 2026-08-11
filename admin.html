@@ -78,6 +78,22 @@ tbody tr:active{background:#F8F5EC}
 .bar-mini{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:50px}
 .bar-mini i{display:block;height:100%;background:var(--gold)}
 .pct{font-size:12.5px;color:var(--navy-soft);white-space:nowrap;min-width:34px;text-align:right}
+.pct .cnt{color:#B7AF9C;font-size:11px}
+
+th.manage{width:70px}
+.btn-del{
+  padding:6px 12px;border:1.5px solid #E3B8A8;border-radius:7px;
+  background:#FBF0ED;color:#A8442F;font-size:12.5px;font-weight:600;
+}
+.btn-del:disabled{opacity:.5}
+@media (max-width:520px){
+  td[data-label="관리"]{
+    margin-top:4px;padding-top:8px;border-top:1px dashed var(--line);
+    display:block;
+  }
+  td[data-label="관리"]::before{display:none}
+  .btn-del{width:100%;padding:9px}
+}
 
 .empty{text-align:center;padding:50px 20px;color:var(--navy-soft)}
 .loading{text-align:center;padding:50px 20px;color:var(--navy-soft)}
@@ -135,6 +151,7 @@ tbody tr:active{background:#F8F5EC}
             <th class="num" data-k="read_percent">읽기<span class="arrow"></span></th>
             <th class="num" data-k="write_percent">필사<span class="arrow"></span></th>
             <th data-k="last_updated">최근 활동<span class="arrow"></span></th>
+            <th class="manage">관리</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -189,9 +206,45 @@ $('#f-testament').addEventListener('change', load);
 document.querySelectorAll('thead th').forEach(th=>{
   th.addEventListener('click', ()=>{
     const k = th.dataset.k;
+    if(!k) return;
     if(sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = -1; }
     render();
   });
+});
+
+$('#tbody').addEventListener('click', async e=>{
+  const btn = e.target.closest('.btn-del');
+  if(!btn) return;
+
+  const name = btn.dataset.name, birth = btn.dataset.birth, testament = btn.dataset.testament;
+  const testKor = testament==='OT' ? '구약' : '신약';
+  if(!confirm(`${name}님의 ${testKor} 진도를 완전히 삭제합니다.\n이 작업은 되돌릴 수 없습니다.\n\n계속할까요?`)) return;
+
+  btn.disabled = true;
+  btn.textContent = '삭제 중…';
+
+  try{
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({
+        action: 'adminDeleteUser',
+        admin_key: adminKey,
+        name, birth_date: birth, testament
+      })
+    });
+    const json = await res.json();
+    if(json.ok){
+      rows = rows.filter(u => !(u.name===name && u.birth_date===birth && u.testament===testament));
+      render();
+    }else{
+      alert('삭제하지 못했습니다: ' + json.error.message);
+      btn.disabled = false; btn.textContent = '삭제';
+    }
+  }catch(e){
+    alert('연결에 실패했습니다.');
+    btn.disabled = false; btn.textContent = '삭제';
+  }
 });
 
 function render(){
@@ -203,7 +256,9 @@ function render(){
   });
 
   document.querySelectorAll('thead th').forEach(th=>{
-    th.querySelector('.arrow').textContent = th.dataset.k===sortKey ? (sortDir===1?'▲':'▼') : '';
+    const arrow = th.querySelector('.arrow');
+    if(!arrow) return;
+    arrow.textContent = th.dataset.k===sortKey ? (sortDir===1?'▲':'▼') : '';
   });
 
   const tbody = $('#tbody');
@@ -219,12 +274,15 @@ function render(){
       <td class="name-cell" data-label="이름">${esc(u.name)}</td>
       <td data-label="성경">${testKor}</td>
       <td class="num" data-label="읽기">
-        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.read_percent}%"></i></div><span class="pct">${u.read_percent}%</span></div>
+        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.read_percent}%"></i></div><span class="pct">${u.read_percent}% <span class="cnt">(${u.read_count}/${u.total_chapters})</span></span></div>
       </td>
       <td class="num" data-label="필사">
-        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.write_percent}%;background:var(--navy)"></i></div><span class="pct">${u.write_percent}%</span></div>
+        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.write_percent}%;background:var(--navy)"></i></div><span class="pct">${u.write_percent}% <span class="cnt">(${u.write_count}/${u.total_chapters})</span></span></div>
       </td>
       <td data-label="최근 활동">${updated}</td>
+      <td data-label="관리">
+        <button class="btn-del" data-name="${esc(u.name)}" data-birth="${esc(u.birth_date)}" data-testament="${u.testament}">삭제</button>
+      </td>
     </tr>`;
   }).join('');
 }
