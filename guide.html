@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>도움말 · 성경 읽기·필사 지도</title>
+<title>Guide · 성경 읽기·필사 지도</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -80,6 +80,14 @@ table.legend td{padding:14px 10px;border-bottom:1px solid #F0ECE0;font-size:18px
 table.legend td:first-child{width:56px}
 .swatch{display:inline-block;width:34px;height:34px;border-radius:8px}
 
+.shot{
+  display:block;width:100%;max-width:100%;height:auto;
+  border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 6px 18px rgba(27,42,74,.14);
+  margin:20px 0;
+}
+.shot-cap{text-align:center;font-size:13.5px;color:#B7AF9C;margin-top:-10px;margin-bottom:20px}
+
 .faq-q{font-weight:700;font-size:18.5px;margin:24px 0 8px;color:var(--navy)}
 .faq-q .qm{color:var(--gold);margin-right:6px}
 .faq-a{font-size:17.5px;color:#3A4560}
@@ -111,7 +119,7 @@ footer .app-link b{color:var(--navy)}
 
 <header>
   <div class="ring">📖</div>
-  <h1>도움말</h1>
+  <h1>Guide</h1>
   <p>성경 읽기·필사 지도 사용 안내</p>
 </header>
 
@@ -129,6 +137,10 @@ footer .app-link b{color:var(--navy)}
 <section id="s1">
   <h2><span class="num">1</span>시작하기</h2>
   <p class="lead">처음 접속하면 가장 먼저 보이는 로그인 화면입니다.</p>
+
+  <img class="shot" src="guide_shots/login.png" alt="로그인 화면">
+  <p class="shot-cap">실제 로그인 화면</p>
+
   <ol class="steps">
     <li><span class="n">1</span><span><b>이름</b>을 입력합니다. (선택 사항)</span></li>
     <li><span class="n">2</span><span><b>생일</b> 4자리를 입력합니다. (예: 1월 1일 → 0101) — 이름을 적으면 필수</span></li>
@@ -148,18 +160,18 @@ footer .app-link b{color:var(--navy)}
 
 <section id="s2">
   <h2><span class="num">2</span>지도 화면 살펴보기</h2>
-  <p class="lead">로그인 후 보이는 화면의 구성 요소입니다.</p>
+  <p class="lead">로그인 후 보이는 화면입니다. 실제 사용 화면입니다.</p>
+
+  <img class="shot" src="guide_shots/read_saved.png" alt="지도 화면 - 읽기지도">
+  <p class="shot-cap">신약성경 읽기지도 예시</p>
+
   <ul class="bullets">
-    <li><b>상단 남색 영역</b> — 지금 보고 있는 지도 이름과 내 이름이 표시됩니다</li>
-    <li><b>구약/신약 바로가기 버튼</b> — 누르면 반대쪽 성경으로 바로 전환됩니다</li>
+    <li><b>저장 중… / 저장됨</b> — 왼쪽 위 표시. 체크한 내용이 서버에 잘 전달됐는지 알려줍니다</li>
+    <li><b>구약 바로가기 · 도움말 · 처음화면으로</b> — 오른쪽 위 링크 3개. 지금 보고 있는 성경의 반대쪽으로 바로 이동하거나, 이 도움말을 열거나, 로그인 화면으로 돌아갑니다</li>
     <li><b>통계 카드 4개</b> — 전체 진도(%), 완료한 장, 전체 장 수, 연결된 설교 편수</li>
     <li><b>범례</b> — 각 색상이 무엇을 뜻하는지 설명</li>
-    <li><b>책 목록</b> — 소분류(모세오경 / 역사서 / 시가서 등)로 묶여서 권별로 나열</li>
-    <li><b>처음화면으로</b> — 로그인 화면으로 복귀. 진도는 저장된 상태로 유지됨</li>
+    <li><b>책 목록</b> — 소분류(사복음서·사도행전 / 바울서신 등)로 묶여서 권별로 나열</li>
   </ul>
-  <div class="box">
-    화면 좌측 상단에 <b>"저장 중… / 저장됨"</b> 표시가 나타납니다. 이 표시가 저장됨으로 바뀔 때까지 기다렸다가 화면을 벗어나는 것을 권장합니다.
-  </div>
 </section>
 
 <section id="s3">
@@ -175,7 +187,11 @@ footer .app-link b{color:var(--navy)}
     <tr><td><span class="swatch" style="background:#1B2A4A;border:3px solid #C9A961"></span></td><td><b>둘 다 완료</b> — 읽기와 필사를 모두 마친 장</td></tr>
     <tr><td><span class="swatch" style="background:#F5F1E6;border:1px solid #E4DECF;position:relative"><span style="position:absolute;top:-5px;right:-5px;width:10px;height:10px;border-radius:50%;background:#1B2A4A;display:inline-block"></span></span></td><td><b>점 표시</b> — 그 장에 연결된 설교가 있다는 뜻</td></tr>
   </table>
-  <div class="box gold">필사지도로 들어가면 색이 반대로 적용됩니다 — 필사완료가 진하게, 읽기만 완료는 옅은 테두리로 표시됩니다.</div>
+
+  <img class="shot" src="guide_shots/write_mode.png" alt="필사지도 예시 - 색이 반대로 적용됨">
+  <p class="shot-cap">필사지도로 들어가면 색이 반대로 — 필사완료가 골드로 진하게 채워집니다</p>
+
+  <div class="box gold">필사지도에서는 필사완료가 진하게, 읽기만 완료는 옅은 테두리로 표시됩니다. 읽기지도와 정반대입니다.</div>
 </section>
 
 <section id="s4">
@@ -186,7 +202,7 @@ footer .app-link b{color:var(--navy)}
     <li><span class="n">2</span><span>그 권의 모든 장이 지금 활동 기준으로 한번에 완료 처리됩니다</span></li>
     <li><span class="n">3</span><span>다시 누르면 그 활동만 전체 초기화됩니다 (반대 활동은 유지)</span></li>
   </ol>
-  <p class="lead" style="margin-top:28px">각 권 카드 아래쪽엔 그 권과 관련된 설교 목록이 나옵니다.</p>
+  <p class="lead" style="margin-top:28px">각 권 카드 아래쪽엔 그 권과 관련된 설교 목록이 나옵니다 (위 스크린샷에도 보입니다).</p>
   <ul class="bullets">
     <li>제목 왼쪽 배지(예: "5장")는 그 설교가 다루는 본문 범위입니다</li>
     <li>제목 오른쪽에는 설교자 이름이 표시됩니다</li>
