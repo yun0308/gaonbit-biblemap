@@ -77,39 +77,53 @@ header h1{font-family:'Gowun Batang',serif;font-size:22px;font-weight:700}
 
 .person-list{display:flex;flex-direction:column;gap:1px;background:var(--line);border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
 .person-row{
-  background:var(--cream-2);padding:14px 16px;
-  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  background:var(--cream-2);padding:12px 16px;
+  display:grid;
+  grid-template-columns:130px 1fr 1fr 90px 64px;
+  align-items:center;column-gap:14px;
 }
-.person-name{flex:0 0 150px;font-weight:700;font-size:15px;white-space:nowrap}
-.person-updated{flex:0 0 auto;margin-left:auto;font-size:12px;color:#B7AF9C;white-space:nowrap}
+.person-name{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.person-updated{font-size:11.5px;color:#B7AF9C;white-space:nowrap;text-align:right}
 
-/* 구약/신약 한 줄에 나란히 */
-.testament-line{display:flex;gap:22px;flex:1;flex-wrap:wrap;min-width:260px}
-.t-cell{display:flex;align-items:center;gap:8px;min-width:220px}
-.t-label{font-size:12px;font-weight:700;color:var(--navy-soft);flex:0 0 28px}
+/* 구약/신약 각각 한 칸씩 — person-row가 grid라 항상 한 줄 유지 */
+.t-cell{display:flex;align-items:center;gap:7px;min-width:0}
+.t-label{font-size:11.5px;font-weight:700;color:var(--navy-soft);flex:0 0 26px}
 .t-empty .t-none{font-size:12px;color:#C7BFA6}
 
-.bar-mini{width:70px;flex:0 0 70px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar-mini{width:52px;flex:0 0 52px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
 .bar-mini i{display:block;height:100%}
-.pct{font-size:12.5px;color:var(--navy-soft);white-space:nowrap;min-width:80px}
-.pct .cnt{color:#B7AF9C;font-size:11px}
+.pct{font-size:12px;color:var(--navy-soft);white-space:nowrap}
+.pct .cnt{color:#B7AF9C;font-size:10.5px;display:block}
 
 .btn-del-mini{
-  font-size:11px;font-weight:600;color:#A8442F;
-  padding:3px 8px;border:1px solid #E3B8A8;border-radius:6px;background:#FBF0ED;
-  margin-left:2px;
+  font-size:11.5px;font-weight:600;color:#A8442F;
+  padding:6px 10px;border:1px solid #E3B8A8;border-radius:6px;background:#FBF0ED;
+  white-space:nowrap;
 }
 .btn-del-mini:disabled{opacity:.5}
 
 .empty{text-align:center;padding:50px 20px;color:var(--navy-soft)}
 .loading{text-align:center;padding:50px 20px;color:var(--navy-soft)}
 
-@media (max-width:640px){
-  .person-row{flex-direction:column;align-items:flex-start;gap:10px}
-  .person-name{flex:none}
-  .person-updated{margin-left:0}
-  .testament-line{flex-direction:column;gap:10px;width:100%}
-  .t-cell{width:100%}
+@media (max-width:720px){
+  .person-row{
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:
+      "name    name"
+      "ot      nt"
+      "updated del";
+    row-gap:8px;
+  }
+  .person-name{grid-area:name}
+  .person-row .t-ot{grid-area:ot}
+  .person-row .t-nt{grid-area:nt}
+  .person-updated{grid-area:updated;text-align:left}
+  .btn-del-mini{grid-area:del;justify-self:end}
+  .t-cell{flex-wrap:wrap;row-gap:2px;min-width:0}
+  .t-label{flex:0 0 auto}
+  .bar-mini{width:36px;flex:0 0 36px}
+  .pct{display:block;width:100%;padding-left:33px;font-size:11.5px}
+  .pct .cnt{display:inline}
 }
 </style>
 </head>
@@ -201,9 +215,8 @@ $('#sections').addEventListener('click', async e=>{
   const btn = e.target.closest('.btn-del-mini');
   if(!btn) return;
 
-  const name = btn.dataset.name, birth = btn.dataset.birth, testament = btn.dataset.testament;
-  const testKor = testament==='OT' ? '구약' : '신약';
-  if(!confirm(`${name}님의 ${testKor} 진도를 완전히 삭제합니다.\n이 작업은 되돌릴 수 없습니다.\n\n계속할까요?`)) return;
+  const name = btn.dataset.name, birth = btn.dataset.birth;
+  if(!confirm(`${name}님의 진도를 구약·신약 모두 완전히 삭제합니다.\n이 작업은 되돌릴 수 없습니다.\n\n계속할까요?`)) return;
 
   btn.disabled = true;
   btn.textContent = '삭제 중…';
@@ -215,12 +228,13 @@ $('#sections').addEventListener('click', async e=>{
       body: JSON.stringify({
         action: 'adminDeleteUser',
         admin_key: adminKey,
-        name, birth_date: birth, testament
+        name, birth_date: birth
+        // testament 생략 → 구약+신약 전체 삭제
       })
     });
     const json = await res.json();
     if(json.ok){
-      rows = rows.filter(u => !(u.name===name && u.birth_date===birth && u.testament===testament));
+      rows = rows.filter(u => !(u.name===name && u.birth_date===birth));
       people = groupByPerson(rows);
       render();
     }else{
@@ -246,13 +260,16 @@ function render(){
     const modeKor = mode==='read' ? '읽기' : '필사';
     const rowsHtml = people.map(p=>{
       const updated = p.last_updated ? new Date(p.last_updated).toLocaleDateString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+      const hasAny = p.ot || p.nt;
+      const delBtn = hasAny
+        ? `<button class="btn-del-mini" title="구약+신약 데이터 전체 삭제" data-name="${esc(p.name)}" data-birth="${esc(p.birth_date)}">삭제</button>`
+        : '';
       return `<div class="person-row">
         <div class="person-name">${esc(p.name)}<span class="birth-tag">${esc(p.birth_date)}</span></div>
-        <div class="testament-line">
-          ${testamentCell(p.ot, 'OT', mode)}
-          ${testamentCell(p.nt, 'NT', mode)}
-        </div>
+        ${testamentCell(p.ot, 'OT', mode)}
+        ${testamentCell(p.nt, 'NT', mode)}
         <div class="person-updated">${updated}</div>
+        ${delBtn}
       </div>`;
     }).join('');
 
@@ -266,18 +283,17 @@ function render(){
 /* 구약 또는 신약 진도 한 칸 (없으면 옅게 '기록 없음') */
 function testamentCell(u, testament, mode){
   const testKor = testament==='OT' ? '구약' : '신약';
+  const posClass = testament==='OT' ? 't-ot' : 't-nt';
   if(!u){
-    return `<div class="t-cell t-empty"><span class="t-label">${testKor}</span><span class="t-none">기록 없음</span></div>`;
+    return `<div class="t-cell ${posClass} t-empty"><span class="t-label">${testKor}</span><span class="t-none">기록 없음</span></div>`;
   }
   const pct = mode==='read' ? u.read_percent : u.write_percent;
   const cnt = mode==='read' ? u.read_count : u.write_count;
   const barColor = mode==='read' ? 'var(--navy)' : 'var(--gold)';
-  const delBtn = `<button class="btn-del-mini" title="${testKor} 데이터 완전 삭제" data-name="${esc(u.name)}" data-birth="${esc(u.birth_date)}" data-testament="${testament}">삭제</button>`;
-  return `<div class="t-cell">
+  return `<div class="t-cell ${posClass}">
     <span class="t-label">${testKor}</span>
     <div class="bar-mini"><i style="width:${pct}%;background:${barColor}"></i></div>
     <span class="pct">${pct}% <span class="cnt">(${cnt}/${u.total_chapters})</span></span>
-    ${delBtn}
   </div>`;
 }
 
