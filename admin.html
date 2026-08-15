@@ -59,6 +59,12 @@ header h1{font-family:'Gowun Batang',serif;font-size:22px;font-weight:700}
 .summary .s{flex:1;background:#fff;padding:16px 10px;text-align:center}
 .summary .s .v{font-size:24px;font-weight:800;color:#1F2B46}
 .summary .s .k{font-size:12px;color:#8D8B83;margin-top:4px}
+@media (max-width:640px){
+  .summary{display:grid;grid-template-columns:1fr 1fr}
+  .summary .s{border-bottom:1px solid #DFDAC6}
+  .summary .s:nth-child(3),.summary .s:nth-child(4){border-bottom:none}
+  .summary .s .k{white-space:nowrap;font-size:11px}
+}
 
 .birth-tag{
   font-size:11.5px;font-weight:600;color:var(--navy-soft);
@@ -258,12 +264,19 @@ function render(){
 
   sections.innerHTML = ['read','write'].map(mode=>{
     const modeKor = mode==='read' ? '읽기' : '필사';
-    const rowsHtml = people.map(p=>{
+    // 이 활동(읽기 또는 필사)을 구약·신약 어느 쪽으로도 한 번도 안 한 사람은 이 섹션에서 아예 제외
+    const modePeople = people.filter(p => hasActivity(p.ot, mode) || hasActivity(p.nt, mode));
+
+    if(!modePeople.length){
+      return `<section class="act-section">
+        <h2 class="act-heading act-heading-${mode}">${modeKor} 진도</h2>
+        <div class="empty">아직 ${modeKor} 기록이 있는 참여자가 없습니다.</div>
+      </section>`;
+    }
+
+    const rowsHtml = modePeople.map(p=>{
       const updated = p.last_updated ? new Date(p.last_updated).toLocaleDateString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
-      const hasAny = p.ot || p.nt;
-      const delBtn = hasAny
-        ? `<button class="btn-del-mini" title="구약+신약 데이터 전체 삭제" data-name="${esc(p.name)}" data-birth="${esc(p.birth_date)}">삭제</button>`
-        : '';
+      const delBtn = `<button class="btn-del-mini" title="구약+신약 데이터 전체 삭제" data-name="${esc(p.name)}" data-birth="${esc(p.birth_date)}">삭제</button>`;
       return `<div class="person-row">
         <div class="person-name">${esc(p.name)}<span class="birth-tag">${esc(p.birth_date)}</span></div>
         ${testamentCell(p.ot, 'OT', mode)}
@@ -280,11 +293,18 @@ function render(){
   }).join('');
 }
 
-/* 구약 또는 신약 진도 한 칸 (없으면 옅게 '기록 없음') */
+/* 해당 성경(u)에 그 활동(mode) 기록이 실제로 있는지 (0장이면 기록 없는 것으로 취급) */
+function hasActivity(u, mode){
+  if(!u) return false;
+  const cnt = mode==='read' ? u.read_count : u.write_count;
+  return cnt > 0;
+}
+
+/* 구약 또는 신약 진도 한 칸 — 그 활동을 안 했으면 '기록 없음'으로 통일 표시 */
 function testamentCell(u, testament, mode){
   const testKor = testament==='OT' ? '구약' : '신약';
   const posClass = testament==='OT' ? 't-ot' : 't-nt';
-  if(!u){
+  if(!hasActivity(u, mode)){
     return `<div class="t-cell ${posClass} t-empty"><span class="t-label">${testKor}</span><span class="t-none">기록 없음</span></div>`;
   }
   const pct = mode==='read' ? u.read_percent : u.write_percent;
@@ -298,12 +318,19 @@ function testamentCell(u, testament, mode){
 }
 
 function renderSummary(){
-  const n = people.length;
-  const avgRead = rows.length ? Math.round(rows.reduce((s,u)=>s+u.read_percent,0)/rows.length) : 0;
-  const avgWrite = rows.length ? Math.round(rows.reduce((s,u)=>s+u.write_percent,0)/rows.length) : 0;
+  const readPeople = people.filter(p => hasActivity(p.ot,'read') || hasActivity(p.nt,'read'));
+  const writePeople = people.filter(p => hasActivity(p.ot,'write') || hasActivity(p.nt,'write'));
+
+  // 평균은 실제로 그 활동을 한 성경(구약/신약 각 항목)만 대상으로 계산 — 기록 없음(0)은 제외
+  const readEntries = rows.filter(u => u.read_count > 0);
+  const writeEntries = rows.filter(u => u.write_count > 0);
+  const avgRead = readEntries.length ? Math.round(readEntries.reduce((s,u)=>s+u.read_percent,0)/readEntries.length) : 0;
+  const avgWrite = writeEntries.length ? Math.round(writeEntries.reduce((s,u)=>s+u.write_percent,0)/writeEntries.length) : 0;
+
   $('#summary').innerHTML = `
-    <div class="s"><div class="v">${n}</div><div class="k">참여자 수</div></div>
+    <div class="s"><div class="v">${readPeople.length}</div><div class="k">읽기 참여자 수</div></div>
     <div class="s"><div class="v">${avgRead}%</div><div class="k">평균 읽기 진도</div></div>
+    <div class="s"><div class="v">${writePeople.length}</div><div class="k">필사 참여자 수</div></div>
     <div class="s"><div class="v">${avgWrite}%</div><div class="k">평균 필사 진도</div></div>
   `;
 }
