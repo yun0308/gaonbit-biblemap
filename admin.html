@@ -181,8 +181,8 @@ async function load(){
   $('#gate-err').style.display = 'none';
 
   try{
-    const q = new URLSearchParams({ action:'getAllProgress', admin_key: adminKey });
-    const res = await fetch(API_URL + '?' + q);
+    const q = new URLSearchParams({ action:'getAllProgress', admin_key: adminKey, _: Date.now() });
+    const res = await fetch(API_URL + '?' + q, { cache: 'no-store' });
     const json = await res.json();
     if(!json.ok){
       $('#gate-err').textContent = json.error.message || '조회에 실패했습니다.';

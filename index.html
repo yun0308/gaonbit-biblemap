@@ -576,7 +576,13 @@ $('#btn-logout').addEventListener('click', async ()=>{
 
 $('#btn-switch-testament').addEventListener('click', async ()=>{
   const btn = $('#btn-switch-testament');
+  const label = btn.textContent;
   btn.disabled = true;
+
+  if(Object.keys(S.pending).length){
+    btn.textContent = '저장 중…';
+    await flush(true);
+  }
 
   S.testament = S.testament==='OT' ? 'NT' : 'OT';
   S.progress = {};
@@ -590,6 +596,7 @@ $('#btn-switch-testament').addEventListener('click', async ()=>{
   $('#loading').style.display = 'none';
   $('#books').style.display = '';
   render();
+  btn.textContent = label;
   btn.disabled = false;
 });
 
@@ -670,9 +677,10 @@ async function loadProgress(){
   if(CONFIG.API_URL){
     try{
       const q = new URLSearchParams({
-        action:'getProgress', name:S.name, birth_date:S.birth, testament:S.testament
+        action:'getProgress', name:S.name, birth_date:S.birth, testament:S.testament,
+        _: Date.now()  // 통신사/브라우저의 GET 응답 캐싱을 우회하기 위한 매번 다른 값
       });
-      const res = await fetch(CONFIG.API_URL + '?' + q);
+      const res = await fetch(CONFIG.API_URL + '?' + q, { cache: 'no-store' });
       const json = await res.json();
       if(json.ok){ S.progress = json.data.progress || {}; return; }
       toast('진도를 불러오지 못했습니다: ' + json.error.message);
@@ -712,7 +720,7 @@ function queue(bookId, chapter){
   S.pending[bookId + ':' + chapter] = true;
   setSyncStatus(navigator.onLine===false ? 'offline' : 'syncing');
   clearTimeout(S.timer);
-  S.timer = setTimeout(flush, 1500);
+  S.timer = setTimeout(flush, 500);
 }
 
 async function flush(silent){
