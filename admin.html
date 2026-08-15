@@ -76,8 +76,15 @@ tbody td{padding:12px 14px;border-bottom:1px solid #F0ECE0;font-size:14px}
   padding:2px 6px;margin-left:4px;font-variant-numeric:tabular-nums;
 }
 tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr.grp-second td{border-bottom:1px solid #F0ECE0}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:active{background:#F8F5EC}
+
+.act-tag{
+  display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;
+}
+.act-read{background:#EDE7D8;color:#8A6A1E}
+.act-write{background:#E4E8EF;color:var(--navy)}
 
 .bar-cell{display:flex;align-items:center;gap:8px}
 .bar-mini{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:50px}
@@ -106,9 +113,13 @@ th.manage{width:70px}
 @media (max-width:520px){
   table, thead, tbody, tr, td, th{display:block}
   thead{display:none}
-  tbody tr{
-    border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:12px 14px;
-    background:var(--cream-2);
+  tbody tr.grp-first{
+    border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;
+    margin-bottom:0;padding:12px 14px 6px;background:var(--cream-2);
+  }
+  tbody tr.grp-second{
+    border:1px solid var(--line);border-top:1px dashed var(--line);
+    border-radius:0 0 10px 10px;margin-bottom:12px;padding:6px 14px 12px;background:var(--cream-2);
   }
   tbody td{border:none;padding:5px 0;display:flex;justify-content:space-between;align-items:center}
   tbody td::before{content:attr(data-label);font-size:12px;color:var(--navy-soft);font-weight:600}
@@ -153,8 +164,8 @@ th.manage{width:70px}
           <tr>
             <th data-k="name">이름<span class="arrow"></span></th>
             <th data-k="testament">성경<span class="arrow"></span></th>
-            <th class="num" data-k="read_percent">읽기<span class="arrow"></span></th>
-            <th class="num" data-k="write_percent">필사<span class="arrow"></span></th>
+            <th>활동</th>
+            <th class="num">진도</th>
             <th data-k="last_updated">최근 활동<span class="arrow"></span></th>
             <th class="manage">관리</th>
           </tr>
@@ -268,27 +279,34 @@ function render(){
 
   const tbody = $('#tbody');
   if(!sorted.length){
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty">아직 참여자 데이터가 없습니다.</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty">아직 참여자 데이터가 없습니다.</div></td></tr>`;
     return;
   }
 
   tbody.innerHTML = sorted.map(u=>{
     const testKor = u.testament==='OT' ? '구약' : '신약';
     const updated = u.last_updated ? new Date(u.last_updated).toLocaleDateString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
-    return `<tr>
-      <td class="name-cell" data-label="이름">${esc(u.name)} <span class="birth-tag">${esc(u.birth_date)}</span></td>
-      <td data-label="성경">${testKor}</td>
-      <td class="num" data-label="읽기">
+    const delBtn = `<button class="btn-del" data-name="${esc(u.name)}" data-birth="${esc(u.birth_date)}" data-testament="${u.testament}">삭제</button>`;
+
+    const readRow = `<tr class="grp-first">
+      <td class="name-cell" data-label="이름" rowspan="2">${esc(u.name)} <span class="birth-tag">${esc(u.birth_date)}</span></td>
+      <td data-label="성경" rowspan="2">${testKor}</td>
+      <td data-label="활동"><span class="act-tag act-read">읽기</span></td>
+      <td class="num" data-label="진도">
         <div class="bar-cell"><div class="bar-mini"><i style="width:${u.read_percent}%"></i></div><span class="pct">${u.read_percent}% <span class="cnt">(${u.read_count}/${u.total_chapters})</span></span></div>
       </td>
-      <td class="num" data-label="필사">
+      <td data-label="최근 활동" rowspan="2">${updated}</td>
+      <td data-label="관리" rowspan="2">${delBtn}</td>
+    </tr>`;
+
+    const writeRow = `<tr class="grp-second">
+      <td data-label="활동"><span class="act-tag act-write">필사</span></td>
+      <td class="num" data-label="진도">
         <div class="bar-cell"><div class="bar-mini"><i style="width:${u.write_percent}%;background:var(--gold)"></i></div><span class="pct">${u.write_percent}% <span class="cnt">(${u.write_count}/${u.total_chapters})</span></span></div>
       </td>
-      <td data-label="최근 활동">${updated}</td>
-      <td data-label="관리">
-        <button class="btn-del" data-name="${esc(u.name)}" data-birth="${esc(u.birth_date)}" data-testament="${u.testament}">삭제</button>
-      </td>
     </tr>`;
+
+    return readRow + writeRow;
   }).join('');
 }
 
