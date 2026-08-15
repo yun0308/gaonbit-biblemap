@@ -70,6 +70,11 @@ thead th.num{text-align:right}
 thead th:hover{color:var(--navy)}
 thead th .arrow{font-size:10px;margin-left:3px;opacity:.5}
 tbody td{padding:12px 14px;border-bottom:1px solid #F0ECE0;font-size:14px}
+.birth-tag{
+  font-size:11.5px;font-weight:600;color:var(--navy-soft);
+  background:var(--cream);border:1px solid var(--line);border-radius:5px;
+  padding:2px 6px;margin-left:4px;font-variant-numeric:tabular-nums;
+}
 tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:active{background:#F8F5EC}
@@ -271,7 +276,7 @@ function render(){
     const testKor = u.testament==='OT' ? '구약' : '신약';
     const updated = u.last_updated ? new Date(u.last_updated).toLocaleDateString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
     return `<tr>
-      <td class="name-cell" data-label="이름">${esc(u.name)}</td>
+      <td class="name-cell" data-label="이름">${esc(u.name)} <span class="birth-tag">${esc(u.birth_date)}</span></td>
       <td data-label="성경">${testKor}</td>
       <td class="num" data-label="읽기">
         <div class="bar-cell"><div class="bar-mini"><i style="width:${u.read_percent}%"></i></div><span class="pct">${u.read_percent}% <span class="cnt">(${u.read_count}/${u.total_chapters})</span></span></div>
