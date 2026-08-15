@@ -60,71 +60,56 @@ header h1{font-family:'Gowun Batang',serif;font-size:22px;font-weight:700}
 .summary .s .v{font-size:24px;font-weight:800;color:#1F2B46}
 .summary .s .k{font-size:12px;color:#8D8B83;margin-top:4px}
 
-table{width:100%;border-collapse:collapse;background:var(--cream-2);border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
-thead th{
-  text-align:left;font-size:12.5px;color:var(--navy-soft);font-weight:700;
-  padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap;
-  cursor:pointer;user-select:none;
-}
-thead th.num{text-align:right}
-thead th:hover{color:var(--navy)}
-thead th .arrow{font-size:10px;margin-left:3px;opacity:.5}
-tbody td{padding:12px 14px;border-bottom:1px solid #F0ECE0;font-size:14px}
 .birth-tag{
   font-size:11.5px;font-weight:600;color:var(--navy-soft);
   background:var(--cream);border:1px solid var(--line);border-radius:5px;
-  padding:2px 6px;margin-left:4px;font-variant-numeric:tabular-nums;
+  padding:2px 6px;margin-left:6px;font-variant-numeric:tabular-nums;
 }
-tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
-tbody tr.grp-second td{border-bottom:1px solid #F0ECE0}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:active{background:#F8F5EC}
 
-.act-tag{
-  display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;
+/* ===== 대분류 섹션 (읽기 진도 / 필사 진도) ===== */
+.act-section{margin-bottom:32px}
+.act-heading{
+  font-family:'Gowun Batang',serif;font-size:19px;font-weight:700;
+  padding:10px 0;margin-bottom:10px;border-bottom:2px solid var(--navy);
 }
-.act-read{background:#EDE7D8;color:#8A6A1E}
-.act-write{background:#E4E8EF;color:var(--navy)}
+.act-heading-read{color:var(--navy)}
+.act-heading-write{color:#8A6A1E;border-bottom-color:var(--gold)}
 
-.bar-cell{display:flex;align-items:center;gap:8px}
-.bar-mini{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:50px}
-.bar-mini i{display:block;height:100%;background:var(--navy)}
-.pct{font-size:12.5px;color:var(--navy-soft);white-space:nowrap;min-width:34px;text-align:right}
+.person-list{display:flex;flex-direction:column;gap:1px;background:var(--line);border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.person-row{
+  background:var(--cream-2);padding:14px 16px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.person-name{flex:0 0 150px;font-weight:700;font-size:15px;white-space:nowrap}
+.person-updated{flex:0 0 auto;margin-left:auto;font-size:12px;color:#B7AF9C;white-space:nowrap}
+
+/* 구약/신약 한 줄에 나란히 */
+.testament-line{display:flex;gap:22px;flex:1;flex-wrap:wrap;min-width:260px}
+.t-cell{display:flex;align-items:center;gap:8px;min-width:220px}
+.t-label{font-size:12px;font-weight:700;color:var(--navy-soft);flex:0 0 28px}
+.t-empty .t-none{font-size:12px;color:#C7BFA6}
+
+.bar-mini{width:70px;flex:0 0 70px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar-mini i{display:block;height:100%}
+.pct{font-size:12.5px;color:var(--navy-soft);white-space:nowrap;min-width:80px}
 .pct .cnt{color:#B7AF9C;font-size:11px}
 
-th.manage{width:70px}
-.btn-del{
-  padding:6px 12px;border:1.5px solid #E3B8A8;border-radius:7px;
-  background:#FBF0ED;color:#A8442F;font-size:12.5px;font-weight:600;
+.btn-del-mini{
+  font-size:11px;font-weight:600;color:#A8442F;
+  padding:3px 8px;border:1px solid #E3B8A8;border-radius:6px;background:#FBF0ED;
+  margin-left:2px;
 }
-.btn-del:disabled{opacity:.5}
-@media (max-width:520px){
-  td[data-label="관리"]{
-    margin-top:4px;padding-top:8px;border-top:1px dashed var(--line);
-    display:block;
-  }
-  td[data-label="관리"]::before{display:none}
-  .btn-del{width:100%;padding:9px}
-}
+.btn-del-mini:disabled{opacity:.5}
 
 .empty{text-align:center;padding:50px 20px;color:var(--navy-soft)}
 .loading{text-align:center;padding:50px 20px;color:var(--navy-soft)}
 
-@media (max-width:520px){
-  table, thead, tbody, tr, td, th{display:block}
-  thead{display:none}
-  tbody tr.grp-first{
-    border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;
-    margin-bottom:0;padding:12px 14px 6px;background:var(--cream-2);
-  }
-  tbody tr.grp-second{
-    border:1px solid var(--line);border-top:1px dashed var(--line);
-    border-radius:0 0 10px 10px;margin-bottom:12px;padding:6px 14px 12px;background:var(--cream-2);
-  }
-  tbody td{border:none;padding:5px 0;display:flex;justify-content:space-between;align-items:center}
-  tbody td::before{content:attr(data-label);font-size:12px;color:var(--navy-soft);font-weight:600}
-  tbody td.name-cell::before{display:none}
-  tbody td.name-cell{font-weight:700;font-size:16px;padding-bottom:8px}
+@media (max-width:640px){
+  .person-row{flex-direction:column;align-items:flex-start;gap:10px}
+  .person-name{flex:none}
+  .person-updated{margin-left:0}
+  .testament-line{flex-direction:column;gap:10px;width:100%}
+  .t-cell{width:100%}
 }
 </style>
 </head>
@@ -147,32 +132,13 @@ th.manage{width:70px}
 <div id="dash">
   <div class="wrap">
     <div class="toolbar">
-      <select id="f-testament">
-        <option value="">전체</option>
-        <option value="NT">신약</option>
-        <option value="OT">구약</option>
-      </select>
       <span class="spacer"></span>
       <button class="refresh" id="btn-refresh">새로고침</button>
     </div>
 
     <div class="summary" id="summary"></div>
 
-    <div id="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th data-k="name">이름<span class="arrow"></span></th>
-            <th data-k="testament">성경<span class="arrow"></span></th>
-            <th>활동</th>
-            <th class="num">진도</th>
-            <th data-k="last_updated">최근 활동<span class="arrow"></span></th>
-            <th class="manage">관리</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
+    <div id="sections"></div>
   </div>
 </div>
 
@@ -182,9 +148,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbzHjZ10cYdtHiHeVCf5qy65
 
 const $ = s => document.querySelector(s);
 let adminKey = '';
-let rows = [];
-let sortKey = 'read_percent';
-let sortDir = -1;
+let rows = [];       // API 원본 (사람×성경 단위)
+let people = [];     // 사람 단위로 합친 것: {name, birth, ot:{...}|null, nt:{...}|null, last_updated}
 
 $('#btn-enter').addEventListener('click', load);
 $('#f-key').addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
@@ -196,9 +161,7 @@ async function load(){
   $('#gate-err').style.display = 'none';
 
   try{
-    const testament = $('#f-testament').value;
     const q = new URLSearchParams({ action:'getAllProgress', admin_key: adminKey });
-    if(testament) q.set('testament', testament);
     const res = await fetch(API_URL + '?' + q);
     const json = await res.json();
     if(!json.ok){
@@ -207,6 +170,7 @@ async function load(){
       return;
     }
     rows = json.data.users || [];
+    people = groupByPerson(rows);
     $('#gate').style.display = 'none';
     $('#dash').style.display = 'block';
     render();
@@ -217,19 +181,24 @@ async function load(){
 }
 
 $('#btn-refresh').addEventListener('click', load);
-$('#f-testament').addEventListener('change', load);
 
-document.querySelectorAll('thead th').forEach(th=>{
-  th.addEventListener('click', ()=>{
-    const k = th.dataset.k;
-    if(!k) return;
-    if(sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = -1; }
-    render();
+/* 사람(이름+생일) 단위로 구약/신약 데이터를 하나로 합침 */
+function groupByPerson(list){
+  const map = {};
+  list.forEach(u=>{
+    const key = u.name + '|' + u.birth_date;
+    if(!map[key]) map[key] = { name:u.name, birth_date:u.birth_date, ot:null, nt:null, last_updated:'' };
+    const slot = u.testament === 'OT' ? 'ot' : 'nt';
+    map[key][slot] = u;
+    if(!map[key].last_updated || (u.last_updated && u.last_updated > map[key].last_updated)){
+      map[key].last_updated = u.last_updated;
+    }
   });
-});
+  return Object.values(map).sort((a,b)=> a.name.localeCompare(b.name));
+}
 
-$('#tbody').addEventListener('click', async e=>{
-  const btn = e.target.closest('.btn-del');
+$('#sections').addEventListener('click', async e=>{
+  const btn = e.target.closest('.btn-del-mini');
   if(!btn) return;
 
   const name = btn.dataset.name, birth = btn.dataset.birth, testament = btn.dataset.testament;
@@ -252,6 +221,7 @@ $('#tbody').addEventListener('click', async e=>{
     const json = await res.json();
     if(json.ok){
       rows = rows.filter(u => !(u.name===name && u.birth_date===birth && u.testament===testament));
+      people = groupByPerson(rows);
       render();
     }else{
       alert('삭제하지 못했습니다: ' + json.error.message);
@@ -265,55 +235,56 @@ $('#tbody').addEventListener('click', async e=>{
 
 function render(){
   renderSummary();
-  const sorted = [...rows].sort((a,b)=>{
-    let av = a[sortKey], bv = b[sortKey];
-    if(typeof av === 'string') return av.localeCompare(bv) * sortDir;
-    return ((av||0) - (bv||0)) * sortDir;
-  });
 
-  document.querySelectorAll('thead th').forEach(th=>{
-    const arrow = th.querySelector('.arrow');
-    if(!arrow) return;
-    arrow.textContent = th.dataset.k===sortKey ? (sortDir===1?'▲':'▼') : '';
-  });
-
-  const tbody = $('#tbody');
-  if(!sorted.length){
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty">아직 참여자 데이터가 없습니다.</div></td></tr>`;
+  const sections = $('#sections');
+  if(!people.length){
+    sections.innerHTML = `<div class="empty">아직 참여자 데이터가 없습니다.</div>`;
     return;
   }
 
-  tbody.innerHTML = sorted.map(u=>{
-    const testKor = u.testament==='OT' ? '구약' : '신약';
-    const updated = u.last_updated ? new Date(u.last_updated).toLocaleDateString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
-    const delBtn = `<button class="btn-del" data-name="${esc(u.name)}" data-birth="${esc(u.birth_date)}" data-testament="${u.testament}">삭제</button>`;
+  sections.innerHTML = ['read','write'].map(mode=>{
+    const modeKor = mode==='read' ? '읽기' : '필사';
+    const rowsHtml = people.map(p=>{
+      const updated = p.last_updated ? new Date(p.last_updated).toLocaleDateString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+      return `<div class="person-row">
+        <div class="person-name">${esc(p.name)}<span class="birth-tag">${esc(p.birth_date)}</span></div>
+        <div class="testament-line">
+          ${testamentCell(p.ot, 'OT', mode)}
+          ${testamentCell(p.nt, 'NT', mode)}
+        </div>
+        <div class="person-updated">${updated}</div>
+      </div>`;
+    }).join('');
 
-    const readRow = `<tr class="grp-first">
-      <td class="name-cell" data-label="이름" rowspan="2">${esc(u.name)} <span class="birth-tag">${esc(u.birth_date)}</span></td>
-      <td data-label="성경" rowspan="2">${testKor}</td>
-      <td data-label="활동"><span class="act-tag act-read">읽기</span></td>
-      <td class="num" data-label="진도">
-        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.read_percent}%"></i></div><span class="pct">${u.read_percent}% <span class="cnt">(${u.read_count}/${u.total_chapters})</span></span></div>
-      </td>
-      <td data-label="최근 활동" rowspan="2">${updated}</td>
-      <td data-label="관리" rowspan="2">${delBtn}</td>
-    </tr>`;
-
-    const writeRow = `<tr class="grp-second">
-      <td data-label="활동"><span class="act-tag act-write">필사</span></td>
-      <td class="num" data-label="진도">
-        <div class="bar-cell"><div class="bar-mini"><i style="width:${u.write_percent}%;background:var(--gold)"></i></div><span class="pct">${u.write_percent}% <span class="cnt">(${u.write_count}/${u.total_chapters})</span></span></div>
-      </td>
-    </tr>`;
-
-    return readRow + writeRow;
+    return `<section class="act-section">
+      <h2 class="act-heading act-heading-${mode}">${modeKor} 진도</h2>
+      <div class="person-list">${rowsHtml}</div>
+    </section>`;
   }).join('');
 }
 
+/* 구약 또는 신약 진도 한 칸 (없으면 옅게 '기록 없음') */
+function testamentCell(u, testament, mode){
+  const testKor = testament==='OT' ? '구약' : '신약';
+  if(!u){
+    return `<div class="t-cell t-empty"><span class="t-label">${testKor}</span><span class="t-none">기록 없음</span></div>`;
+  }
+  const pct = mode==='read' ? u.read_percent : u.write_percent;
+  const cnt = mode==='read' ? u.read_count : u.write_count;
+  const barColor = mode==='read' ? 'var(--navy)' : 'var(--gold)';
+  const delBtn = `<button class="btn-del-mini" title="${testKor} 데이터 완전 삭제" data-name="${esc(u.name)}" data-birth="${esc(u.birth_date)}" data-testament="${testament}">삭제</button>`;
+  return `<div class="t-cell">
+    <span class="t-label">${testKor}</span>
+    <div class="bar-mini"><i style="width:${pct}%;background:${barColor}"></i></div>
+    <span class="pct">${pct}% <span class="cnt">(${cnt}/${u.total_chapters})</span></span>
+    ${delBtn}
+  </div>`;
+}
+
 function renderSummary(){
-  const n = rows.length;
-  const avgRead = n ? Math.round(rows.reduce((s,u)=>s+u.read_percent,0)/n) : 0;
-  const avgWrite = n ? Math.round(rows.reduce((s,u)=>s+u.write_percent,0)/n) : 0;
+  const n = people.length;
+  const avgRead = rows.length ? Math.round(rows.reduce((s,u)=>s+u.read_percent,0)/rows.length) : 0;
+  const avgWrite = rows.length ? Math.round(rows.reduce((s,u)=>s+u.write_percent,0)/rows.length) : 0;
   $('#summary').innerHTML = `
     <div class="s"><div class="v">${n}</div><div class="k">참여자 수</div></div>
     <div class="s"><div class="v">${avgRead}%</div><div class="k">평균 읽기 진도</div></div>
