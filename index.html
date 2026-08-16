@@ -24,6 +24,8 @@
 <meta name="apple-mobile-web-app-title" content="바이블맵">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -649,8 +651,6 @@ function updateHeaderTexts(){
 
 async function enterMap(){
   showMap();
-  $('#loading').style.display = 'block';
-  $('#books').style.display = 'none';
 
   updateHeaderTexts();
   $('#guest-banner').style.display = S.guest ? 'block' : 'none';
@@ -661,8 +661,30 @@ async function enterMap(){
         ? '기기가 달라도 이름과 생일이 같으면 이어서 기록됩니다.'
         : '지금은 이 브라우저에만 저장됩니다.');
 
-  await loadSermons();
-  if(!S.guest) await loadProgress();
+  // 1) 로컬에 저장해둔 예전 기록이 있으면 먼저 화면에 그려서 기다리는 느낌을 없앰
+  let hadCache = false;
+  if(!S.guest){
+    try{
+      const cached = JSON.parse(localStorage.getItem(localKey())||'{}');
+      if(Object.keys(cached).length){ S.progress = cached; hadCache = true; }
+    }catch(e){}
+  }
+
+  const sermonsReady = Object.keys(S.sermons.NT).length || Object.keys(S.sermons.OT).length;
+  if(hadCache && sermonsReady){
+    // 캐시+설교데이터 둘 다 있으면 로딩 화면 없이 바로 표시
+    $('#books').style.display = '';
+    render();
+  }else{
+    $('#loading').style.display = 'block';
+    $('#books').style.display = 'none';
+  }
+
+  // 2) 설교 데이터와 진도 데이터를 동시에 요청 (순서대로 안 기다림)
+  await Promise.all([
+    loadSermons(),
+    S.guest ? Promise.resolve() : loadProgress()
+  ]);
 
   $('#loading').style.display = 'none';
   $('#books').style.display = '';
