@@ -503,6 +503,17 @@ let S = {
 const $ = s => document.querySelector(s);
 const LS_KEY = 'gaonbit_bible_login';
 
+/* 현재 로그인 세션 상태를 저장 (새로고침해도 이 화면을 유지하기 위함) */
+function saveSession(active){
+  if(S.guest) return; // 게스트는 애초에 진도를 저장 안 하므로 세션도 기억하지 않음
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      name:S.name, birthDate:S.birth, lastMode:S.mode, lastTestament:S.testament,
+      active: !!active
+    }));
+  }catch(e){}
+}
+
 /* ============================================================
    화면 전환
    ============================================================ */
@@ -534,7 +545,7 @@ function pickSeg(id, val){
   [...$(id).children].forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===val)));
 }
 
-// 저장된 로그인 값 채우기
+// 저장된 로그인 값 채우기 (또는 활성 세션이면 바로 지도로 진입)
 (function restore(){
   try{
     const v = JSON.parse(localStorage.getItem(LS_KEY)||'null');
@@ -545,6 +556,14 @@ function pickSeg(id, val){
     S.testament = v.lastTestament||'NT';
     pickSeg('#seg-mode', S.mode);
     pickSeg('#seg-test', S.testament);
+
+    if(v.active && v.birthDate){
+      S.name = v.name;
+      S.birth = v.birthDate;
+      S.guest = false;
+      S.progress = {};
+      enterMap();
+    }
   }catch(e){}
 })();
 
@@ -572,11 +591,7 @@ $('#btn-start').addEventListener('click', async ()=>{
   S.guest = !name;
   S.progress = {};
 
-  if(!S.guest){
-    localStorage.setItem(LS_KEY, JSON.stringify({
-      name:S.name, birthDate:S.birth, lastMode:S.mode, lastTestament:S.testament
-    }));
-  }
+  saveSession(true);
 
   await enterMap();
 });
@@ -591,6 +606,7 @@ $('#btn-logout').addEventListener('click', async ()=>{
   }
   btn.textContent = label;
   btn.disabled = false;
+  saveSession(false);
   showLogin();
 });
 
@@ -607,6 +623,7 @@ $('#btn-switch-testament').addEventListener('click', async ()=>{
   S.testament = S.testament==='OT' ? 'NT' : 'OT';
   S.progress = {};
   updateHeaderTexts();
+  saveSession(true);
 
   $('#loading').style.display = 'block';
   $('#books').style.display = 'none';
