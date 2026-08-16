@@ -502,15 +502,19 @@ let S = {
 
 const $ = s => document.querySelector(s);
 const LS_KEY = 'gaonbit_bible_login';
+const SS_ACTIVE_KEY = 'gaonbit_active_session';
 
-/* 현재 로그인 세션 상태를 저장 (새로고침해도 이 화면을 유지하기 위함) */
+/* 이름/생일 등 마지막 선택값은 localStorage(계속 남음, 편의용 자동입력)
+   "지금 지도 화면에 들어와 있다"는 상태는 sessionStorage(새로고침엔 유지되지만,
+   홈화면 아이콘으로 앱을 완전히 새로 열면 사라짐)로 분리해서 저장 */
 function saveSession(active){
   if(S.guest) return; // 게스트는 애초에 진도를 저장 안 하므로 세션도 기억하지 않음
   try{
     localStorage.setItem(LS_KEY, JSON.stringify({
-      name:S.name, birthDate:S.birth, lastMode:S.mode, lastTestament:S.testament,
-      active: !!active
+      name:S.name, birthDate:S.birth, lastMode:S.mode, lastTestament:S.testament
     }));
+    if(active) sessionStorage.setItem(SS_ACTIVE_KEY, '1');
+    else sessionStorage.removeItem(SS_ACTIVE_KEY);
   }catch(e){}
 }
 
@@ -557,7 +561,8 @@ function pickSeg(id, val){
     pickSeg('#seg-mode', S.mode);
     pickSeg('#seg-test', S.testament);
 
-    if(v.active && v.birthDate){
+    const isActive = sessionStorage.getItem(SS_ACTIVE_KEY) === '1';
+    if(isActive && v.birthDate){
       S.name = v.name;
       S.birth = v.birthDate;
       S.guest = false;
