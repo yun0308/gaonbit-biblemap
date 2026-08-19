@@ -617,7 +617,6 @@ $('#btn-logout').addEventListener('click', async ()=>{
 
 $('#btn-switch-testament').addEventListener('click', async ()=>{
   const btn = $('#btn-switch-testament');
-  const label = btn.textContent;
   btn.disabled = true;
 
   if(Object.keys(S.pending).length){
@@ -654,7 +653,6 @@ $('#btn-switch-testament').addEventListener('click', async ()=>{
   $('#loading').style.display = 'none';
   $('#books').style.display = '';
   render();
-  btn.textContent = label;
   btn.disabled = false;
 });
 
@@ -775,7 +773,11 @@ async function loadProgress(){
       });
       const res = await fetch(CONFIG.API_URL + '?' + q, { cache: 'no-store' });
       const json = await res.json();
-      if(json.ok){ S.progress = mergeServerProgress(json.data.progress); return; }
+      if(json.ok){
+        S.progress = mergeServerProgress(json.data.progress);
+        saveLocal(); // 보기만 해도 캐시에 남겨서, 다음번 방문/전환이 느리지 않게 함
+        return;
+      }
       toast('진도를 불러오지 못했습니다: ' + json.error.message);
     }catch(e){
       toast('연결이 원활하지 않아 저장된 기록만 표시합니다.');
